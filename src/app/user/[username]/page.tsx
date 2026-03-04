@@ -103,7 +103,7 @@ export default function UserPage() {
                             >
                                 <p className="text-sm font-semibold text-emerald-500 mb-1 tracking-widest uppercase">Match Found</p>
                                 <p className="text-xl font-poppins font-bold text-slate-800 animate-pulse">
-                                    {analysis.archetype} Detected
+                                    {analysis.archetype.name} Detected
                                 </p>
                             </motion.div>
                         )}

@@ -1,0 +1,12 @@
+--- src/components/ui/handwritten-title.tsx
++++ src/components/ui/handwritten-title.tsx
+@@ -5,3 +5,3 @@
+     return (
+-        <div className="inline-flex relative">
++        <div className="inline-flex relative w-min whitespace-nowrap">
+             <RoughNotation
+@@ -15,3 +15,3 @@
+             >
+-                <div className="text-3xl font-patrick text-slate-800 relative z-10 px-2 inline-block leading-[2rem]">
++                <div className="text-3xl font-patrick text-slate-800 relative z-10 px-2 leading-[2rem]">
+                     {children}

@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 
+import { Archetype } from "@/lib/analysis/archetypes/types";
+
 interface ArchetypeRevealProps {
-    archetype: string;
+    archetype: Archetype;
     onComplete: () => void;
 }
 
@@ -50,7 +52,7 @@ export function ArchetypeReveal({ archetype, onComplete }: ArchetypeRevealProps)
                     }}
                     className="text-5xl md:text-7xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]"
                 >
-                    {archetype}
+                    {archetype.name}
                 </motion.h1>
 
                 {/* Scanning line effect */}

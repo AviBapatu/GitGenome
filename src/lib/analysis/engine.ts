@@ -2,12 +2,9 @@ import { GithubRepo } from "@/types/github";
 import { DeveloperProfile, Trait, Mutation } from "@/types/analysis";
 
 import { countLanguages, dominantLanguage, inactiveRepoRatio } from "./metrics";
-
 import { detectSerialStarter, detectTypeScriptFanatic } from "./traits";
-
 import { detectAbandonedProjects, detectFrameworkCollector } from "./mutations";
-
-import { determineArchetype } from "./archetypes";
+import { detectArchetype } from "./archetypes/engine";
 
 export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
     const languageMap = countLanguages(repos);
@@ -24,7 +21,7 @@ export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
         detectFrameworkCollector(languageMap),
     ].filter(Boolean) as Mutation[];
 
-    const archetype = determineArchetype(traits);
+    const archetype = detectArchetype(repos);
 
     return {
         archetype,

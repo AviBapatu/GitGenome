@@ -1,3 +1,5 @@
+import { Archetype } from "@/lib/analysis/archetypes/types";
+
 export interface Trait {
     name: string;
     confidence: number;
@@ -10,7 +12,7 @@ export interface Mutation {
 }
 
 export interface DeveloperProfile {
-    archetype: string;
+    archetype: Archetype;
     confidence: number;
     dominantLanguage: string | null;
     traits: Trait[];

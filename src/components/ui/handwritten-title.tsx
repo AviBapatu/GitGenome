@@ -3,7 +3,7 @@ import { RoughNotation } from "react-rough-notation";
 
 export function HandwrittenTitle({ children, type = "underline" }: { children: ReactNode, type?: "underline" | "box" | "circle" | "highlight" }) {
     return (
-        <div className="flex w-full">
+        <div className="inline-flex relative w-min whitespace-nowrap">
             <RoughNotation
                 type={type}
                 show={true}
@@ -13,7 +13,7 @@ export function HandwrittenTitle({ children, type = "underline" }: { children: R
                 animationDuration={1500}
                 padding={type === 'highlight' ? [0, -2] : [0, 4]}
             >
-                <div className="text-3xl font-patrick text-slate-800 relative z-10 px-2 inline-block leading-[2rem]">
+                <div className="text-3xl font-patrick text-slate-800 relative z-10 px-2 leading-[2rem]">
                     {children}
                 </div>
             </RoughNotation>

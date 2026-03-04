@@ -1,9 +1,7 @@
 "use client";
 
 import { DeveloperProfile } from "@/types/analysis";
-import { NightOwlScene } from "@/components/scenes/night-owl/night-owl-scene";
-// import { ChaosCoderScene } from "@/components/scenes/chaos-coder-scene";
-// import { GeneralistScene } from "@/components/scenes/generalist-scene";
+import { sceneMap } from "@/components/scenes/scene-map";
 import { MuteToggle } from "@/components/sound/mute-toggle";
 import { ArchetypeReveal } from "@/components/experience/archetype-reveal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,14 +12,8 @@ export function GenomeExperience({ analysis }: { analysis: DeveloperProfile }) {
 
     // Scene orchestrator
     const renderScene = () => {
-        switch (analysis.archetype) {
-            // Add other archetypes here as they are built
-            //   case "Chaos Coder":
-            //     return <ChaosCoderScene analysis={analysis} />;
-            default:
-                // Default to Night Owl for now to test the scene
-                return <NightOwlScene analysis={analysis} />;
-        }
+        const Scene = sceneMap[analysis.archetype.id] || sceneMap["night_owl"];
+        return <Scene analysis={analysis} />;
     };
 
     return (
