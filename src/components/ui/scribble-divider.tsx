@@ -10,7 +10,7 @@ export function ScribbleDivider() {
                 strokeWidth={1.5}
                 animationDelay={1000}
             >
-                <div className="w-48 h-4 opacity-0 absolute">divider</div>
+                <div className="w-48 h-4 opacity-0 pointer-events-none">divider</div>
             </RoughNotation>
         </div>
     );

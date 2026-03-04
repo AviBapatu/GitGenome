@@ -1,7 +1,7 @@
 "use client";
 
 import { DeveloperProfile } from "@/types/analysis";
-import { NightOwlScene } from "@/components/scenes/night-owl-scene";
+import { NightOwlScene } from "@/components/scenes/night-owl/night-owl-scene";
 // import { ChaosCoderScene } from "@/components/scenes/chaos-coder-scene";
 // import { GeneralistScene } from "@/components/scenes/generalist-scene";
 import { MuteToggle } from "@/components/sound/mute-toggle";

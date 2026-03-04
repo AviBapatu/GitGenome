@@ -14,14 +14,14 @@ export function NotebookLayout({ children, subject }: { children: React.ReactNod
             <div className="bg-[#fdfbf7] shadow-2xl rounded-sm p-8 md:p-12 relative overflow-hidden border border-[#e5e5e5] min-h-[600px]">
 
                 {/* Binder Holes (Left Edge) */}
-                <div className="absolute left-4 top-0 bottom-0 flex flex-col justify-evenly opacity-40">
+                <div className="absolute left-4 top-0 bottom-0 flex flex-col justify-evenly opacity-40 py-12">
                     {[...Array(6)].map((_, i) => (
                         <div key={i} className="w-4 h-4 rounded-full bg-slate-900 shadow-inner" />
                     ))}
                 </div>
 
                 {/* Notebook Lines */}
-                <div className="absolute inset-0 pt-24 pointer-events-none opacity-20"
+                <div className="absolute left-0 right-0 bottom-0 top-[130px] pointer-events-none opacity-20"
                     style={{ backgroundImage: 'linear-gradient(#94a3b8 1px, transparent 1px)', backgroundSize: '100% 2rem' }}
                 />
 
