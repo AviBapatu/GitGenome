@@ -15,10 +15,6 @@ export const githubService = {
         return normalizeUser(rawUser);
     },
 
-    /**
-     * Fetch all repositories for a user, handling pagination
-     * Returns raw GitHub repo data so the analysis engine has access to all fields
-     */
     fetchAllRepos: async (
         username: string,
         maxRepos: number = 100
@@ -39,13 +35,30 @@ export const githubService = {
             }
 
             allRepos.push(...rawRepos);
-
-            if (allRepos.length >= maxRepos) {
-                return allRepos.slice(0, maxRepos);
-            }
         }
 
-        return allRepos;
+        // Filter rules
+        const validRepos = allRepos.filter(repo =>
+            repo.fork === false &&
+            repo.archived === false &&
+            repo.size > 0 &&
+            repo.owner?.login.toLowerCase() === username.toLowerCase()
+        );
+
+        // Sort by updated_at to ensure order
+        validRepos.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+
+        const finalRepos = validRepos.slice(0, maxRepos);
+
+        // Fetch commit count for top 10
+        const top10 = finalRepos.slice(0, 10);
+        await Promise.all(top10.map(async (repo) => {
+            if (repo.owner?.login) {
+                repo.commitCount = await githubClient.getRepoCommitsCount(repo.owner.login, repo.name);
+            }
+        }));
+
+        return finalRepos;
     },
 
     /**
@@ -56,13 +69,7 @@ export const githubService = {
         username: string,
         topN: number = 15
     ): Promise<GithubRepoData[]> => {
-        // Fetch more than topN to ensure we get quality repos
-        const repos = await githubService.fetchAllRepos(username, topN * 2);
-
-        // Sort by update date and take top N
-        return repos
-            .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-            .slice(0, topN);
+        return githubService.fetchAllRepos(username, topN);
     },
 
     /**

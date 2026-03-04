@@ -39,6 +39,7 @@ export const normalizeRepo = (rawRepo: GithubRepoData): NormalizedRepo => {
         updatedAt: new Date(rawRepo.updated_at),
         description: rawRepo.description || undefined,
         topics: rawRepo.topics || undefined,
+        commitCount: rawRepo.commitCount,
     };
 };
 

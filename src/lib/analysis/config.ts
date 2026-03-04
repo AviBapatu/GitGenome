@@ -5,13 +5,13 @@
 
 export const ANALYSIS_CONFIG = {
   // Repository size thresholds
-  smallRepoThreshold: 500, // KB - repos smaller than this are considered "small"
-  mediumRepoThreshold: 5000, // KB
-  largeRepoThreshold: 50000, // KB
+  smallRepoThreshold: 200, // KB - repos smaller than this are considered "small" experiments
+  mediumRepoThreshold: 2000, // KB
+  largeRepoThreshold: 10000, // KB - large systems
 
   // Time-based thresholds
   abandonedMonths: 12, // repos inactive > 12 months are considered abandoned
-  projectLongevityYears: 2, // projects active > 2 years are considered long-term
+  projectLongevityYears: 3, // projects active > 3 years are considered long-term
 
   // Commit-based thresholds
   highCommitFrequency: 50, // commits per year
@@ -90,27 +90,27 @@ export const ANALYSIS_CONFIG = {
  */
 export const SCORING_THRESHOLDS = {
   nightCommitRatio: {
-    veryHigh: 0.5, // 50% of commits at night
-    high: 0.3, // 30% of commits at night
-    moderate: 0.2, // 20% of commits at night
+    veryHigh: 0.50, // 50+ extreme night owl
+    high: 0.30, // 30-50 night owl
+    moderate: 0.15, // 15-30 occasional
   },
 
   repoCount: {
-    veryHigh: 25,
-    high: 15,
-    moderate: 8,
+    veryHigh: 200, // ecosystem maintainer
+    high: 80, // open source maintainer
+    moderate: 20, // active developer
   },
 
   languageDiversity: {
-    veryHigh: 0.6, // 60% of unique languages relative to repos
+    veryHigh: 0.6,
     high: 0.4,
     moderate: 0.25,
   },
 
   abandonmentRatio: {
-    high: 0.5, // 50% abandoned
-    moderate: 0.3,
-    low: 0.1,
+    high: 0.7, // 0.7+ extreme experimenter
+    moderate: 0.5, // 0.5-0.7 chaotic builder
+    low: 0.2, // 0-0.2 disciplined dev
   },
 
   commitConsistency: {
@@ -119,3 +119,4 @@ export const SCORING_THRESHOLDS = {
     low: 0.4,
   },
 };
+

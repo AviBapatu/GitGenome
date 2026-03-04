@@ -26,6 +26,12 @@ export interface GithubRepoData {
     updated_at: string;
     description?: string | null;
     topics?: string[];
+    fork?: boolean;
+    archived?: boolean;
+    owner?: {
+        login: string;
+    };
+    commitCount?: number;
 }
 
 interface ApiResponse<T> {
@@ -108,5 +114,46 @@ export const githubClient = {
             `/repos/${owner}/${repo}/commits`,
             { per_page }
         );
+    },
+
+    getRepoCommitsCount: async (owner: string, repo: string): Promise<number> => {
+        const url = new URL(`${BASE_URL}/repos/${owner}/${repo}/commits`);
+        url.searchParams.append("per_page", "1");
+
+        try {
+            const response = await fetch(url.toString(), {
+                headers: getAuthHeaders(),
+            });
+
+            if (!response.ok) {
+                // If the repository is empty or has no commits, it might return 409 Conflict or 404
+                if (response.status === 409 || response.status === 404) {
+                    return 0;
+                }
+                throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+            }
+
+            const linkHeader = response.headers.get("link");
+
+            // If there's no link header, and we got a successful response, there's exactly 1 page (and since per_page=1, 1 commit, or maybe a few if not applying per_page)
+            if (!linkHeader) {
+                const data = await response.json();
+                return data.length;
+            }
+
+            // Parse the link header to find the "last" page number
+            // Example link header: <https://api.github.com/repositories/123/commits?per_page=1&page=2>; rel="next", <https://api.github.com/repositories/123/commits?per_page=1&page=42>; rel="last"
+            const lastPageMatch = linkHeader.match(/page=(\d+)>; rel="last"/);
+            if (lastPageMatch && lastPageMatch[1]) {
+                return parseInt(lastPageMatch[1], 10);
+            }
+
+            // Fallback
+            const data = await response.json();
+            return data.length;
+        } catch (error) {
+            console.error(`Failed to get commit count for ${owner}/${repo}:`, error);
+            return 0; // Return 0 on error so it doesn't break the whole analysis
+        }
     },
 };

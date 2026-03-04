@@ -50,7 +50,8 @@ export default function UserPage() {
         username
     );
     const { data: repos, isLoading: repoLoading, error: repoError } = useGithubRepos(
-        username
+        username,
+        { limit: 50, topOnly: false }
     );
 
     const steps = [

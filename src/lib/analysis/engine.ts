@@ -10,6 +10,12 @@ import {
   detectRapidExperimenter,
   detectBreakFixCycle,
   detectMultiLanguageBouncer,
+  detectSteadyCoder,
+  detectLoneWolf,
+  detectCommunityCollaborator,
+  detectMidnightCoder,
+  detectDeepRoots,
+  detectLanguageExplorer,
 } from "./traits";
 import {
   detectAbandonedProjects,
@@ -45,6 +51,12 @@ export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
   const traitDetectors: Array<() => Trait | null> = [
     () => detectSerialStarter(repos, metrics),
     () => detectTypeScriptFanatic(metrics),
+    () => detectSteadyCoder(metrics),
+    () => detectLoneWolf(metrics),
+    () => detectCommunityCollaborator(metrics),
+    () => detectMidnightCoder(metrics),
+    () => detectDeepRoots(metrics),
+    () => detectLanguageExplorer(metrics),
   ];
 
   if (archetype.id === "chaos_builder") {

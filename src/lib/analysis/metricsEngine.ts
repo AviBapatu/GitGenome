@@ -40,6 +40,9 @@ export interface AnalysisMetrics {
   nightCommitRatio: number; // estimated - commits between 22:00 and 05:00
   creationFrequency: number; // repos created per year
 
+  // Activity concentration
+  activityConcentration: number; // top 3 repo commits / total commits
+
   // Repository health
   minStars: number;
   maxStars: number;
@@ -63,6 +66,7 @@ export function normalizeRepos(repos: GithubRepo[]): NormalizedRepo[] {
     updatedAt: new Date(repo.updated_at),
     description: repo.description || "",
     topics: repo.topics || [],
+    commitCount: repo.commitCount,
   }));
 }
 
@@ -141,24 +145,40 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   );
 
   // Commit frequency estimation
-  // We estimate based on available data
-  const totalCommits = repos.reduce((sum, r) => {
-    // If we have commit data, use it; otherwise estimate based on repo activity
-    return sum + (r.stargazers_count + r.forks_count + Math.random() * 50); // Estimation
-  }, 0);
+  // Use actual commit counts if available, otherwise estimate
+  let totalCommits = 0;
+  const actualCommitsSum = repos.reduce((sum, r) => sum + (r.commitCount || 0), 0);
+
+  if (actualCommitsSum > 0) {
+    totalCommits = actualCommitsSum;
+  } else {
+    // Fallback heuristic if no accurate data could be fetched
+    totalCommits = repos.reduce((sum, r) => sum + (r.stargazers_count + r.forks_count + Math.random() * 50), 0);
+  }
+
+  // Calculate activity concentration (top 3 repos / total commits)
+  const sortedByCommitCount = [...repos]
+    .filter(r => r.commitCount !== undefined)
+    .sort((a, b) => (b.commitCount || 0) - (a.commitCount || 0));
+
+  const top3Commits = sortedByCommitCount
+    .slice(0, 3)
+    .reduce((sum, r) => sum + (r.commitCount || 0), 0);
+
+  const activityConcentration = actualCommitsSum > 0 ? top3Commits / actualCommitsSum : 0;
 
   const firstRepoDate =
     repos.length > 0
       ? new Date(repos.reduce((oldest, r) => {
-          return new Date(r.created_at) < new Date(oldest.created_at)
-            ? r
-            : oldest;
-        }).created_at)
+        return new Date(r.created_at) < new Date(oldest.created_at)
+          ? r
+          : oldest;
+      }).created_at)
       : now;
 
-  const accountAgeYears =
-    (now.getTime() - firstRepoDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
-  const commitFrequency = accountAgeYears > 0 ? totalCommits / accountAgeYears : 0;
+  const accountAgeMonths =
+    (now.getTime() - firstRepoDate.getTime()) / (30.44 * 24 * 60 * 60 * 1000);
+  const commitFrequency = accountAgeMonths > 0 ? totalCommits / accountAgeMonths : 0;
 
   const avgCommitsPerRepo = repoCount > 0 ? totalCommits / repoCount : 0;
 
@@ -168,7 +188,8 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   // Night commit ratio estimation
   const nightCommitRatio = estimateNightCommitRatio(repos);
 
-  // Creation frequency
+  // Creation frequency (repos per year)
+  const accountAgeYears = accountAgeMonths / 12;
   const creationFrequency =
     accountAgeYears > 0 ? repoCount / accountAgeYears : 0;
 
@@ -224,6 +245,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
     forkRatio,
     frameworkKeywords,
     topicDistribution,
+    activityConcentration,
   };
 }
 
