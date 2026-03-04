@@ -26,8 +26,7 @@ export function TechWorkbench() {
 
     return (
         <motion.div
-            className="fixed bottom-0 right-0 z-10 pointer-events-none"
-            style={{ width: "720px", height: "440px" }}
+            className="fixed bottom-0 right-0 z-10 pointer-events-none translate-x-4 sm:translate-x-6 w-[min(840px,98vw)] aspect-[720/440]"
             initial={{ y: 60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -140,7 +139,7 @@ export function TechWorkbench() {
                     <text x="36" y="64" textAnchor="middle" fontSize="5.5" fill="#f0abfc" fontFamily="monospace" opacity={0.8}>Clean Code</text>
                     {/* Middle book */}
                     <rect x="2" y="34" width="70" height="19" rx="2" fill="#1e3a5f" stroke="#2a5080" strokeWidth="1" />
-                    <text x="37" y="47" textAnchor="middle" fontSize="5" fill="#7dd3fc" fontFamily="monospace" opacity={0.85}>You Don't Know JS</text>
+                    <text x="37" y="47" textAnchor="middle" fontSize="5" fill="#7dd3fc" fontFamily="monospace" opacity={0.85}>You Don&apos;t Know JS</text>
                     {/* Top book — the funny one */}
                     <rect x="0" y="10" width="72" height="25" rx="2" fill="#14532d" stroke="#16a34a" strokeWidth="1" />
                     <text x="36" y="22" textAnchor="middle" fontSize="5" fill="#86efac" fontFamily="monospace" opacity={0.9}>New JS Framework</text>

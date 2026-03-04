@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface DustMote {
     x: number;
@@ -29,14 +29,8 @@ interface Props {
 }
 
 export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
-    const [mounted, setMounted] = useState(false);
-    const [dustMotes, setDustMotes] = useState<DustMote[]>([]);
-    const [leds, setLEDs] = useState<LED[]>([]);
-    const [lampOn, setLampOn] = useState(false);
-    const [monitorsOn, setMonitorsOn] = useState(false);
-
-    useEffect(() => {
-        const motes: DustMote[] = [...Array(14)].map(() => ({
+    const [dustMotes] = useState<DustMote[]>(() =>
+        [...Array(14)].map(() => ({
             x: Math.random() * 100,
             startY: 40 + Math.random() * 60,
             targetY: 300 + Math.random() * 200,
@@ -44,21 +38,22 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
             duration: 18 + Math.random() * 14,
             delay: Math.random() * 10,
             drift: (Math.random() - 0.5) * 80,
-        }));
-
+        }))
+    );
+    const [leds] = useState<LED[]>(() => {
         const ledColors = ["#22d3ee", "#4ade80", "#f87171", "#facc15", "#818cf8"];
-        const ledData: LED[] = [...Array(9)].map((_, i) => ({
+        return [...Array(9)].map((_, i) => ({
             x: 15 + Math.random() * 65,
             y: 18 + Math.random() * 40,
             color: ledColors[i % ledColors.length],
             duration: 2 + Math.random() * 3,
             delay: Math.random() * 4,
         }));
+    });
+    const [lampOn, setLampOn] = useState(false);
+    const [monitorsOn, setMonitorsOn] = useState(false);
 
-        setDustMotes(motes);
-        setLEDs(ledData);
-        setMounted(true);
-
+    useEffect(() => {
         // Entrance sequence: lamp on first, then monitors
         const lampTimer = setTimeout(() => setLampOn(true), 300);
         const monitorTimer = setTimeout(() => setMonitorsOn(true), 900);
@@ -220,7 +215,7 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                         <rect x="0" y="0" width="110" height="12" rx="2" fill="#facc15" opacity={0.95} />
                         <text x="10" y="28" fontSize="8.5" fill="#713f12" fontFamily="monospace" fontWeight="bold">npm install hope</text>
                         <text x="10" y="40" fontSize="7.5" fill="#713f12" fontFamily="monospace" opacity={0.8}>--save-sanity</text>
-                        <text x="10" y="55" fontSize="7.5" fill="#92400e" fontFamily="monospace" opacity={0.7}>// TODO: read docs</text>
+                        <text x="10" y="55" fontSize="7.5" fill="#92400e" fontFamily="monospace" opacity={0.7}>{"// TODO: read docs"}</text>
                         <text x="10" y="68" fontSize="7" fill="#92400e" fontFamily="monospace" opacity={0.6}>before installing</text>
                     </g>
 
@@ -237,12 +232,11 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
 
             {/* ─── LAYER 2: Three Monitors (medium parallax) ─── */}
             <motion.div
-                className="absolute"
+                className="absolute pointer-events-none aspect-[680/380] max-w-full"
                 style={{
-                    right: "60px",
-                    top: "6%",
-                    width: "680px",
-                    height: "380px",
+                    right: "max(64px, 8vw)",
+                    top: "12%",
+                    width: "min(680px, 52vw)",
                     translateX: monitorX,
                     translateY: monitorY,
                 }}
@@ -266,12 +260,12 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                             <rect x="8" y="8" width="194" height="130" rx="2" />
                         </clipPath>
                         <clipPath id="screen3">
-                            <rect x="8" y="8" width="164" height="110" rx="2" />
+                            <rect x="8" y="8" width="174" height="120" rx="2" />
                         </clipPath>
                     </defs>
 
                     {/* ── Monitor 1: Terminal (left, further back) ── */}
-                    <g transform="translate(30, 80)" opacity={0.82}>
+                    <g transform="translate(30, 60)" opacity={0.82}>
                         {/* Stand */}
                         <rect x="78" y="138" width="18" height="30" rx="2" fill="#2a2a3a" />
                         <rect x="58" y="165" width="58" height="8" rx="3" fill="#222230" />
@@ -283,21 +277,21 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                         <g clipPath="url(#screen1)">
                             {/* Green text lines scrolling */}
                             {[
-                                { y: 20, text: "$ npm install everything", color: "#4ade80", w: 120 },
-                                { y: 30, text: "⠙ fetching dependencies...", color: "#fbbf24", w: 140 },
-                                { y: 40, text: "✓ react@19.0.0", color: "#4ade80", w: 90 },
-                                { y: 50, text: "✓ next@15.2.0", color: "#4ade80", w: 85 },
-                                { y: 60, text: "✓ svelte@5.6.0", color: "#4ade80", w: 95 },
-                                { y: 70, text: "✓ astro@4.1.0", color: "#4ade80", w: 88 },
-                                { y: 80, text: "⚠ 847 vulnerabilities", color: "#f87171", w: 130 },
-                                { y: 90, text: "$ ", color: "#22d3ee", w: 10 },
-                                { y: 100, text: "[ run again? y/n ]", color: "#a78bfa", w: 105 },
-                            ].map(({ y, text, color, w }, i) => (
+                                { y: 20, text: "$ npm install everything", color: "#4ade80" },
+                                { y: 30, text: "⠙ fetching dependencies...", color: "#fbbf24" },
+                                { y: 40, text: "✓ react@19.0.0", color: "#4ade80" },
+                                { y: 50, text: "✓ next@15.2.0", color: "#4ade80" },
+                                { y: 60, text: "✓ svelte@5.6.0", color: "#4ade80" },
+                                { y: 70, text: "✓ astro@4.1.0", color: "#4ade80" },
+                                { y: 80, text: "⚠ 847 vulnerabilities", color: "#f87171" },
+                                { y: 90, text: "$ ", color: "#22d3ee" },
+                                { y: 100, text: "[ run again? y/n ]", color: "#a78bfa" },
+                            ].map(({ y, text, color }, i) => (
                                 <text key={i} x="12" y={y} fontSize="6.5" fill={color} fontFamily="monospace" opacity={0.9}>{text}</text>
                             ))}
                             {/* Blinking cursor */}
                             <motion.rect
-                                x="20" y="92" width="5" height="7"
+                                x="22" y="83" width="5" height="7"
                                 fill="#22d3ee"
                                 animate={{ opacity: [1, 0, 1] }}
                                 transition={{ duration: 1, repeat: Infinity }}
@@ -315,7 +309,7 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                     </g>
 
                     {/* ── Monitor 2: React dev server (center, largest) ── */}
-                    <g transform="translate(250, 20)">
+                    <g transform="translate(250, 41)">
                         {/* Stand */}
                         <rect x="93" y="150" width="22" height="36" rx="2" fill="#2a2a3a" />
                         <rect x="70" y="183" width="66" height="9" rx="3" fill="#222230" />
@@ -331,15 +325,13 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                             <rect x="8" y="8" width="194" height="16" fill="#2a1040" />
                             <rect x="12" y="11" width="60" height="10" rx="3" fill="#3a1860" />
                             <text x="15" y="19" fontSize="5.5" fill="#a78bfa" fontFamily="monospace">localhost:3000</text>
-                            {/* App content simulation */}
-                            <rect x="8" y="24" width="194" height="8" fill="#0f0820" />
                             {/* Nav bar */}
-                            <rect x="8" y="24" width="194" height="8" fill="#150d28" />
-                            <rect x="12" y="26" width="30" height="4" rx="1" fill="#a78bfa" opacity={0.6} />
-                            <rect x="148" y="26" width="18" height="4" rx="1" fill="#818cf8" opacity={0.4} />
-                            <rect x="170" y="26" width="22" height="4" rx="1" fill="#818cf8" opacity={0.4} />
+                            <rect x="8" y="28" width="194" height="8" fill="#150d28" />
+                            <rect x="12" y="30" width="30" height="4" rx="1" fill="#a78bfa" opacity={0.6} />
+                            <rect x="148" y="30" width="18" height="4" rx="1" fill="#818cf8" opacity={0.4} />
+                            <rect x="170" y="30" width="22" height="4" rx="1" fill="#818cf8" opacity={0.4} />
                             {/* Content area */}
-                            {[34, 42, 50, 58, 66, 74].map((y, i) => (
+                            {[38, 46, 54, 62, 70, 78].map((y, i) => (
                                 <rect key={i} x={12} y={y} width={60 + (i % 3) * 30} height={5} rx={1} fill="#4a3060" opacity={0.5 + i * 0.05} />
                             ))}
                             {/* Hot reload indicator */}
@@ -350,10 +342,10 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                                 transition={{ duration: 2, repeat: Infinity }}
                             />
                             {/* Console area */}
-                            <rect x="8" y="86" width="194" height="52" fill="#0e0a1e" />
-                            <rect x="8" y="86" width="194" height="6" fill="#1a1430" />
-                            <text x="12" y="91" fontSize="5" fill="#818cf8" fontFamily="monospace">Console  Network  Elements</text>
-                            {[94, 101, 108, 115, 122, 129].map((y, i) => (
+                            <rect x="8" y="90" width="194" height="48" fill="#0e0a1e" />
+                            <rect x="8" y="90" width="194" height="6" fill="#1a1430" />
+                            <text x="12" y="94" fontSize="5" fill="#818cf8" fontFamily="monospace">Console  Network  Elements</text>
+                            {[102, 109, 116, 123, 130, 137].map((y, i) => (
                                 <text key={i} x="12" y={y} fontSize="5.5" fill={["#4ade80", "#fbbf24", "#f87171", "#4ade80", "#22d3ee", "#a78bfa"][i]} fontFamily="monospace" opacity={0.8}>
                                     {["▶ Component mounted", "⚠ prop-types warning", "✕ fetch failed 404", "▶ Hot reload done", "▶ State updated", "ℹ 3 items rendered"][i]}
                                 </text>
@@ -364,14 +356,14 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                     </g>
 
                     {/* ── Monitor 3: Console / logs (right, tilted) ── */}
-                    <g transform="translate(490, 90) rotate(4)" opacity={0.78}>
+                    <g transform="translate(490, 60)" opacity={0.82}>
                         {/* Stand */}
-                        <rect x="72" y="125" width="16" height="26" rx="2" fill="#2a2a3a" />
-                        <rect x="54" y="148" width="52" height="7" rx="3" fill="#222230" />
+                        <rect x="78" y="138" width="18" height="30" rx="2" fill="#2a2a3a" />
+                        <rect x="58" y="165" width="58" height="8" rx="3" fill="#222230" />
                         {/* Bezel */}
-                        <rect x="0" y="0" width="180" height="130" rx="8" fill="#1a1a2a" stroke="#3a3a4a" strokeWidth="2" />
+                        <rect x="0" y="0" width="190" height="140" rx="8" fill="#1a1a2a" stroke="#3a3a4a" strokeWidth="2" />
                         {/* Screen */}
-                        <rect x="8" y="8" width="164" height="110" rx="2" fill="#0e0e18" />
+                        <rect x="8" y="8" width="174" height="120" rx="2" fill="#0e0e18" />
                         <g clipPath="url(#screen3)">
                             {[
                                 { y: 18, text: "[vite]  server ready", color: "#a78bfa" },
@@ -387,7 +379,7 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
                                 <text key={i} x="12" y={y} fontSize="6" fill={color} fontFamily="monospace" opacity={0.85}>{text}</text>
                             ))}
                         </g>
-                        <rect x="8" y="8" width="164" height="110" rx="2" fill="rgba(167,139,250,0.03)" />
+                        <rect x="8" y="8" width="174" height="120" rx="2" fill="rgba(167,139,250,0.03)" />
                     </g>
 
                     {/* Desk surface connecting monitors */}
@@ -471,52 +463,50 @@ export function WorkshopBackground({ mouseX = 0.5, mouseY = 0.5 }: Props) {
             </svg>
 
             {/* ─── Dust motes ─── */}
-            {mounted &&
-                dustMotes.map((mote, i) => (
-                    <motion.div
-                        key={`mote-${i}`}
-                        className="absolute rounded-full bg-amber-100/30 pointer-events-none"
-                        style={{
-                            width: mote.size,
-                            height: mote.size,
-                            left: `${mote.x}%`,
-                            bottom: `${mote.startY - 40}%`,
-                        }}
-                        animate={{
-                            y: [0, -mote.targetY],
-                            x: [0, mote.drift],
-                            opacity: [0, 0.6, 0.4, 0],
-                        }}
-                        transition={{
-                            duration: mote.duration,
-                            delay: mote.delay,
-                            repeat: Infinity,
-                            ease: "linear",
-                        }}
-                    />
-                ))}
+            {dustMotes.map((mote, i) => (
+                <motion.div
+                    key={`mote-${i}`}
+                    className="absolute rounded-full bg-amber-100/30 pointer-events-none"
+                    style={{
+                        width: mote.size,
+                        height: mote.size,
+                        left: `${mote.x}%`,
+                        bottom: `${mote.startY - 40}%`,
+                    }}
+                    animate={{
+                        y: [0, -mote.targetY],
+                        x: [0, mote.drift],
+                        opacity: [0, 0.6, 0.4, 0],
+                    }}
+                    transition={{
+                        duration: mote.duration,
+                        delay: mote.delay,
+                        repeat: Infinity,
+                        ease: "linear",
+                    }}
+                />
+            ))}
 
             {/* ─── Blinking LEDs ─── */}
-            {mounted &&
-                leds.map((led, i) => (
-                    <motion.div
-                        key={`led-${i}`}
-                        className="absolute w-1.5 h-1.5 rounded-full pointer-events-none"
-                        style={{
-                            left: `${led.x}%`,
-                            top: `${led.y}%`,
-                            background: led.color,
-                            boxShadow: `0 0 6px 3px ${led.color}`,
-                        }}
-                        animate={{ opacity: [1, 0.1, 1], scale: [1, 0.6, 1] }}
-                        transition={{
-                            duration: led.duration,
-                            delay: led.delay,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                        }}
-                    />
-                ))}
+            {leds.map((led, i) => (
+                <motion.div
+                    key={`led-${i}`}
+                    className="absolute w-1.5 h-1.5 rounded-full pointer-events-none"
+                    style={{
+                        left: `${led.x}%`,
+                        top: `${led.y}%`,
+                        background: led.color,
+                        boxShadow: `0 0 6px 3px ${led.color}`,
+                    }}
+                    animate={{ opacity: [1, 0.1, 1], scale: [1, 0.6, 1] }}
+                    transition={{
+                        duration: led.duration,
+                        delay: led.delay,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                    }}
+                />
+            ))}
 
             {/* Wall-to-floor transition shadow */}
             <div

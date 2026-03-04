@@ -123,18 +123,10 @@ export function RaccoonCreature() {
                 <svg
                     viewBox="0 0 150 190"
                     className="w-full h-full"
-                    style={{ filter: "drop-shadow(0 8px 24px rgba(251,146,60,0.35))" }}
+                    style={{ filter: "drop-shadow(0 10px 15px rgba(20,40,70,0.45))" }}
+                    shapeRendering="geometricPrecision"
                 >
                     <defs>
-                        {/*
-                         * HAND-DRAWN FEEL:
-                         * feTurbulence + feDisplacementMap gives lines a wobbly,
-                         * slightly-off quality like they were drawn with a felt-tip pen.
-                         */}
-                        <filter id="raccoonSketch" x="-5%" y="-5%" width="110%" height="110%">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="7" result="noise" />
-                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.8" xChannelSelector="R" yChannelSelector="G" />
-                        </filter>
                         {/* Warm top light — matches workshop lamp */}
                         <radialGradient id="topLight" cx="50%" cy="10%" r="70%">
                             <stop offset="0%" stopColor="#FFD48A" stopOpacity="0.55" />
@@ -150,12 +142,6 @@ export function RaccoonCreature() {
                             <stop offset="0%" stopColor="#4a4a4a" />
                             <stop offset="100%" stopColor="#383838" />
                         </linearGradient>
-                        {/* Paper grain texture */}
-                        <filter id="grain">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noiseOut" />
-                            <feBlend in="SourceGraphic" in2="noiseOut" mode="multiply" result="blend" />
-                            <feComposite in="blend" in2="SourceGraphic" operator="in" />
-                        </filter>
                     </defs>
 
                     {/* ─── TAIL (behind body) ─── */}
@@ -165,7 +151,7 @@ export function RaccoonCreature() {
                         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
                     >
                         {/* Tail base */}
-                        <ellipse cx="105" cy="148" rx="22" ry="42" fill="url(#bodyFill)" filter="url(#raccoonSketch)" transform="rotate(25 105 148)" />
+                        <ellipse cx="105" cy="148" rx="22" ry="42" fill="url(#bodyFill)" transform="rotate(25 105 148)" />
                         {/* Tail stripes — dark bands */}
                         {[0, 1, 2, 3].map((i) => (
                             <ellipse
@@ -177,7 +163,6 @@ export function RaccoonCreature() {
                                 fill="url(#tailDark)"
                                 opacity={0.6}
                                 transform="rotate(25 108 148)"
-                                filter="url(#raccoonSketch)"
                             />
                         ))}
                     </motion.g>
@@ -191,7 +176,8 @@ export function RaccoonCreature() {
                         fill="url(#bodyFill)"
                         stroke="#4a4a4a"
                         strokeWidth="2"
-                        filter="url(#raccoonSketch)"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                     {/* Belly lighter patch */}
                     <ellipse
@@ -201,12 +187,11 @@ export function RaccoonCreature() {
                         ry="28"
                         fill="#b8b8b8"
                         opacity={0.6}
-                        filter="url(#raccoonSketch)"
                     />
 
                     {/* Little paws */}
-                    <ellipse cx="44" cy="175" rx="12" ry="7" fill="#7a7a7a" stroke="#4a4a4a" strokeWidth="1.5" filter="url(#raccoonSketch)" />
-                    <ellipse cx="100" cy="175" rx="12" ry="7" fill="#7a7a7a" stroke="#4a4a4a" strokeWidth="1.5" filter="url(#raccoonSketch)" />
+                    <ellipse cx="44" cy="175" rx="12" ry="7" fill="#7a7a7a" stroke="#4a4a4a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <ellipse cx="100" cy="175" rx="12" ry="7" fill="#7a7a7a" stroke="#4a4a4a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     {/* Toe lines */}
                     {[-4, 0, 4].map((dx) => (
                         <line key={`toL-${dx}`} x1={44 + dx} y1={172} x2={44 + dx} y2={180} stroke="#4a4a4a" strokeWidth="1" opacity={0.5} />
@@ -222,7 +207,6 @@ export function RaccoonCreature() {
                         strokeWidth="10"
                         fill="none"
                         strokeLinecap="round"
-                        filter="url(#raccoonSketch)"
                     />
                     <path
                         d="M 108 128 Q 122 115, 119 102 Q 116 92, 106 98"
@@ -230,7 +214,6 @@ export function RaccoonCreature() {
                         strokeWidth="10"
                         fill="none"
                         strokeLinecap="round"
-                        filter="url(#raccoonSketch)"
                     />
 
                     {/* ─── HEAD (tracker group) — slight curious tilt ─── */}
@@ -250,7 +233,8 @@ export function RaccoonCreature() {
                             fill="url(#bodyFill)"
                             stroke="#4a4a4a"
                             strokeWidth="2"
-                            filter="url(#raccoonSketch)"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                         />
 
                         {/* Warm top light on head */}
@@ -268,7 +252,8 @@ export function RaccoonCreature() {
                                 fill="#7a7a7a"
                                 stroke="#4a4a4a"
                                 strokeWidth="1.5"
-                                filter="url(#raccoonSketch)"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                             {/* Inner ear */}
                             <path d="M 38 52 Q 33 40, 42 34 Q 49 40, 46 52" fill="#9a7070" opacity={0.6} />
@@ -284,21 +269,22 @@ export function RaccoonCreature() {
                                 fill="#7a7a7a"
                                 stroke="#4a4a4a"
                                 strokeWidth="1.5"
-                                filter="url(#raccoonSketch)"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                             <path d="M 99 52 Q 96 40, 102 34 Q 111 40, 108 52" fill="#9a7070" opacity={0.6} />
                         </motion.g>
 
                         {/* Raccoon mask — dark patches around eyes */}
-                        <ellipse cx="57" cy="80" rx="17" ry="14" fill="#4a4a4a" opacity={0.75} filter="url(#raccoonSketch)" />
-                        <ellipse cx="87" cy="80" rx="17" ry="14" fill="#4a4a4a" opacity={0.75} filter="url(#raccoonSketch)" />
+                        <ellipse cx="57" cy="80" rx="17" ry="14" fill="#4a4a4a" opacity={0.75} />
+                        <ellipse cx="87" cy="80" rx="17" ry="14" fill="#4a4a4a" opacity={0.75} />
                         {/* Mask bridge connecting across nose */}
                         <rect x="64" y="78" width="16" height="6" fill="#4a4a4a" opacity={0.6} rx="3" />
 
                         {/* ─── EYES ─── */}
                         {/* White sclera */}
-                        <circle cx="57" cy="79" r="9" fill="#e8e8d8" filter="url(#raccoonSketch)" />
-                        <circle cx="87" cy="79" r="9" fill="#e8e8d8" filter="url(#raccoonSketch)" />
+                        <circle cx="57" cy="79" r="9" fill="#e8e8d8" />
+                        <circle cx="87" cy="79" r="9" fill="#e8e8d8" />
                         {/* Warm amber iris */}
                         <circle cx="57" cy="79" r="6" fill="#c8a030" />
                         <circle cx="87" cy="79" r="6" fill="#c8a030" />
@@ -352,7 +338,6 @@ export function RaccoonCreature() {
                             strokeWidth="2"
                             fill="none"
                             strokeLinecap="round"
-                            filter="url(#raccoonSketch)"
                         />
                         {/* Right eyebrow — slightly lower, asymmetric */}
                         <path
@@ -361,14 +346,12 @@ export function RaccoonCreature() {
                             strokeWidth="1.5"
                             fill="none"
                             strokeLinecap="round"
-                            filter="url(#raccoonSketch)"
                         />
 
                         {/* Nose */}
                         <path
                             d="M 67 91 Q 72 96, 77 91 Q 74 87, 70 87 Z"
                             fill="#333"
-                            filter="url(#raccoonSketch)"
                         />
                         {/* Nose highlight */}
                         <ellipse cx="69" cy="89" rx="2" ry="1.5" fill="#666" opacity={0.6} />
@@ -380,7 +363,6 @@ export function RaccoonCreature() {
                             strokeWidth="1.5"
                             fill="none"
                             strokeLinecap="round"
-                            filter="url(#raccoonSketch)"
                         />
 
                         {/* Cheek stripe marks */}
