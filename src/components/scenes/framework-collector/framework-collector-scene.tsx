@@ -87,7 +87,20 @@ export function FrameworkCollectorScene({ analysis, user, repos, username }: Sce
                 className="relative z-40 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
             >
                 <div className="pointer-events-auto">
-                    <NotebookLayout analysis={analysis} user={user} repos={repos} username={username} />
+                    <NotebookLayout
+                        analysis={analysis}
+                        user={user}
+                        repos={repos?.map(r => ({
+                            name: r.name,
+                            language: r.language,
+                            size: r.size,
+                            createdAt: new Date(r.created_at),
+                            updatedAt: new Date(r.updated_at),
+                            description: r.description || undefined,
+                            topics: r.topics || undefined
+                        }))}
+                        username={username}
+                    />
                 </div>
             </motion.div>
         </div>

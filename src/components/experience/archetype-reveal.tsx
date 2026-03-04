@@ -12,7 +12,7 @@ interface ArchetypeRevealProps {
 export function ArchetypeReveal({ archetype, onComplete }: ArchetypeRevealProps) {
     return (
         <motion.div
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black text-white"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#faf8f5] text-slate-800"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 1.5, ease: "easeInOut" } }}
@@ -23,46 +23,66 @@ export function ArchetypeReveal({ archetype, onComplete }: ArchetypeRevealProps)
                 }
             }}
         >
-            <div className="text-center relative">
-                <motion.p
-                    initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-                    animate={{ opacity: [0, 1, 0], y: [10, 0, -10], filter: ["blur(4px)", "blur(0px)", "blur(4px)"] }}
-                    transition={{ duration: 2, times: [0, 0.5, 1] }}
-                    className="text-emerald-500 font-mono tracking-[0.3em] text-sm uppercase mb-4"
-                >
-                    Analyzing Developer DNA
-                </motion.p>
+            {/* Paper grid background */}
+            <div
+                className="absolute inset-0 pointer-events-none opacity-[0.4]"
+                style={{
+                    backgroundImage: `
+                        linear-gradient(to right, #94a3b8 1px, transparent 1px),
+                        linear-gradient(to bottom, #94a3b8 1px, transparent 1px)
+                    `,
+                    backgroundSize: '40px 40px',
+                }}
+            />
 
-                <motion.p
-                    initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-                    animate={{ opacity: [0, 1, 0], y: [10, 0, -10], filter: ["blur(4px)", "blur(0px)", "blur(4px)"] }}
-                    transition={{ duration: 2, delay: 1.5, times: [0, 0.5, 1] }}
-                    className="text-emerald-500 font-mono tracking-[0.3em] text-sm uppercase mb-4 absolute top-0 w-full"
+            <div className="text-center relative z-10 w-full px-4 flex flex-col items-center">
+                {/* Handwritten sticky note / stamp effect for classification */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                    animate={{ opacity: 1, scale: 1, rotate: -2 }}
+                    transition={{ duration: 0.5, type: "spring", stiffness: 200, damping: 15 }}
+                    className="mb-8 p-3 border-4 border-red-600 rounded-lg text-red-600 font-patrick text-2xl uppercase tracking-widest bg-red-50/50 transform -rotate-2"
+                    style={{ borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px' }}
                 >
                     Classification Detected
-                </motion.p>
+                </motion.div>
 
+                {/* Main Archetype Name */}
                 <motion.h1
-                    initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    transition={{ duration: 1.5, delay: 3, ease: "easeOut" }}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
                     onAnimationComplete={() => {
-                        // Let the title hang for 2 seconds, then trigger the unmount (exit animation)
+                        // Let the title hang for 2.5 seconds, then trigger the unmount (exit animation)
                         setTimeout(onComplete, 2500);
                     }}
-                    className="text-5xl md:text-7xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]"
+                    className="text-6xl md:text-8xl font-bold font-caveat text-slate-800 transform rotate-1 underline decoration-wavy decoration-slate-400"
                 >
                     {archetype.name}
                 </motion.h1>
 
-                {/* Scanning line effect */}
-                <motion.div
-                    initial={{ top: "0%" }}
-                    animate={{ top: "100%" }}
-                    transition={{ duration: 3, delay: 1, ease: "linear", repeat: 1 }}
-                    className="absolute left-0 right-0 h-1 bg-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.8)] z-10 hidden md:block"
-                    style={{ width: "150%", left: "-25%" }}
-                />
+                {/* Small drawn arrows pointing to it */}
+                <motion.svg
+                    initial={{ opacity: 0, pathLength: 0 }}
+                    animate={{ opacity: 0.6, pathLength: 1 }}
+                    transition={{ duration: 1, delay: 1 }}
+                    width="120" height="80" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                    className="absolute -right-4 md:right-1/4 top-0 text-slate-600 transform scale-75 md:scale-100"
+                >
+                    <path d="M10 10 Q 50 20, 80 80" />
+                    <path d="M60 70 L80 80 L80 60" />
+                </motion.svg>
+
+                <motion.svg
+                    initial={{ opacity: 0, pathLength: 0 }}
+                    animate={{ opacity: 0.6, pathLength: 1 }}
+                    transition={{ duration: 1, delay: 1.2 }}
+                    width="120" height="80" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                    className="absolute -left-4 md:left-1/4 bottom-0 text-slate-600 transform scale-75 md:scale-100"
+                >
+                    <path d="M90 90 Q 50 80, 20 20" />
+                    <path d="M40 30 L20 20 L20 40" />
+                </motion.svg>
             </div>
         </motion.div>
     );

@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 import { useGithubUser } from "@/hooks/useGithubUser";
 import { useGithubRepos } from "@/hooks/useGithubRepos";
-import { AnalysisPipeline } from "@/components/analysis/analysis-pipeline";
+import { SketchAnalysisBoard } from "@/components/analysis/sketch-analysis-board";
 import { GenomeExperience } from "@/components/experience/genome-experience";
 import { analyzeDeveloper } from "@/lib/analysis/engine";
 import { motion, AnimatePresence } from "framer-motion";
@@ -99,18 +99,18 @@ export default function UserPage() {
             return;
         }
         if (loadingFinished) {
-            const timer = setTimeout(() => setShowScene(true), 2000);
+            const timer = setTimeout(() => setShowScene(true), 3500); // Increased a bit to let the user see the match
             return () => clearTimeout(timer);
         }
     }, [loadingFinished, archetypeOverride]);
 
     if (!archetypeOverride && (userError || repoError)) {
         return (
-            <main className="min-h-screen flex items-center justify-center bg-slate-50">
+            <main className="min-h-screen flex items-center justify-center bg-[#faf8f5]">
                 <DevSwitcher />
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold font-poppins text-pink-500 mb-2">Genome Sequence Failed</h1>
-                    <p className="text-slate-600">
+                    <h1 className="text-4xl font-bold font-caveat text-red-600 mb-2 transform rotate-2">Genome Sequence Failed!</h1>
+                    <p className="text-slate-600 font-patrick text-xl">
                         {userError?.message || repoError?.message || "Something went wrong in the lab."}
                     </p>
                 </div>
@@ -136,26 +136,38 @@ export default function UserPage() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                         transition={{ duration: 0.8 }}
-                        className="min-h-screen flex flex-col items-center justify-center gap-8 bg-slate-50 relative z-50"
+                        className="min-h-screen flex flex-col items-center justify-center gap-8 bg-[#faf8f5] relative z-50 text-slate-800"
                     >
-                        <div className="text-center">
-                            <h1 className="text-3xl font-bold font-poppins mb-2">Scanning Specimen</h1>
-                            <p className="text-xl text-indigo-600 font-semibold">@{username}</p>
+                        {/* Paper texture overlay & faint grid */}
+                        <div
+                            className="absolute inset-0 pointer-events-none opacity-[0.4]"
+                            style={{
+                                backgroundImage: `
+                                linear-gradient(to right, #94a3b8 1px, transparent 1px),
+                                linear-gradient(to bottom, #94a3b8 1px, transparent 1px)
+                            `,
+                                backgroundSize: '40px 40px',
+                            }}
+                        />
+
+                        <div className="text-center relative z-10 font-patrick">
+                            <h1 className="text-4xl font-bold mb-2 text-slate-700 underline decoration-wavy decoration-slate-400 transform -rotate-1">Scanning Specimen</h1>
+                            <p className="text-3xl font-caveat text-indigo-700 font-bold transform rotate-2">@{username}</p>
                         </div>
 
-                        <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-md w-full relative overflow-hidden">
-                            <AnalysisPipeline steps={steps} />
+                        <div className="relative z-10 w-full max-w-lg px-4">
+                            <SketchAnalysisBoard steps={steps} />
 
                             {loadingFinished && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.5 }}
-                                    className="mt-8 pt-6 border-t border-slate-100 text-center"
+                                    className="mt-6 text-center transform rotate-2"
                                 >
-                                    <p className="text-sm font-semibold text-emerald-500 mb-1 tracking-widest uppercase">Match Found</p>
-                                    <p className="text-xl font-poppins font-bold text-slate-800 animate-pulse">
-                                        {analysis?.archetype.name} Detected
+                                    <p className="text-2xl font-caveat text-emerald-600 font-bold mb-1 tracking-wider uppercase drop-shadow-sm">✓ Match Found</p>
+                                    <p className="text-3xl font-patrick font-bold text-slate-800 underline decoration-red-400">
+                                        {analysis?.archetype.name} Detected!
                                     </p>
                                 </motion.div>
                             )}
