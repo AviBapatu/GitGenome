@@ -20,6 +20,12 @@ export interface GithubRepo {
     updated_at: string;
     description?: string | null;
     topics?: string[];
+    fork?: boolean;
+    archived?: boolean;
+    owner?: {
+        login: string;
+    };
+    commitCount?: number;
 }
 
 /**
@@ -34,4 +40,5 @@ export interface NormalizedRepo {
     updatedAt: Date;
     description?: string;
     topics?: string[];
+    commitCount?: number;
 }

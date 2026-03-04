@@ -85,8 +85,9 @@ ${pad("Language Diversity:", 20)} ${(debug.metrics.languageDiversity * 100).toFi
 ${pad("Avg Repo Size:", 20)} ${(debug.metrics.avgRepoSize / 1000).toFixed(1)}MB
 ${pad("Small Repo Ratio:", 20)} ${(debug.metrics.smallRepoRatio * 100).toFixed(1)}%
 ${pad("Abandoned Repos:", 20)} ${(debug.metrics.abandonedRepoRatio * 100).toFixed(1)}%
-${pad("Commit Frequency:", 20)} ${debug.metrics.commitFrequency.toFixed(1)}/year
+${pad("Commit Frequency:", 20)} ${debug.metrics.commitFrequency.toFixed(1)}/month
 ${pad("Night Commit Ratio:", 20)} ${(debug.metrics.nightCommitRatio * 100).toFixed(1)}%
+${pad("Activity Concentrat.:", 20)} ${(debug.metrics.activityConcentration * 100).toFixed(1)}%
 ${pad("Avg Project Life:", 20)} ${(debug.metrics.avgProjectLongevity / 30).toFixed(1)} months
 ${pad("Creation Rate:", 20)} ${debug.metrics.creationFrequency.toFixed(2)}/year
 ${pad("Dominant Language:", 20)} ${debug.metrics.dominantLanguage || "None"}
@@ -132,18 +133,16 @@ ${profile.archetype.description}
 ${displayGenomeVisualization(profile.genome)}
 
 ✨ TRAITS DETECTED:
-${
-  profile.traits.length > 0
-    ? profile.traits.map((t) => `• ${t.name} (${Math.round(t.confidence * 100)}%)`).join("\n")
-    : "No major traits detected"
-}
+${profile.traits.length > 0
+      ? profile.traits.map((t) => `• ${t.name} (${Math.round(t.confidence * 100)}%)`).join("\n")
+      : "No major traits detected"
+    }
 
 ⚡ MUTATIONS:
-${
-  profile.mutations.length > 0
-    ? profile.mutations.map((m) => `• ${m.name}: ${m.explanation}`).join("\n")
-    : "No mutations detected"
-}
+${profile.mutations.length > 0
+      ? profile.mutations.map((m) => `• ${m.name}: ${m.explanation}`).join("\n")
+      : "No mutations detected"
+    }
 
 📋 EVIDENCE:
 ${profile.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}

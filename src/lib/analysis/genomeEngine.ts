@@ -17,28 +17,11 @@ export interface DeveloperGenome {
  * Signals: language diversity, repo count, framework variety
  */
 function calculateExploration(metrics: AnalysisMetrics): number {
-  // Normalize metrics to 0-1 range
-  const languageDiversityScore = Math.min(
-    metrics.languageDiversity * 1.5,
-    1
-  ); // Higher diversity = more exploration
-  const repoCountScore = Math.min(
-    metrics.repoCount / 50,
-    1
-  ); // More repos = more exploration
-  const frameworkScore = Math.min(
-    metrics.frameworkKeywords.length / 10,
-    1
-  ); // More frameworks = more exploration
+  const repoCountNormalized = Math.min(metrics.repoCount / 100, 1);
+  const languageCountNormalized = Math.min(metrics.languageCount / 10, 1);
 
-  const weights = ANALYSIS_CONFIG.genomeWeights.exploration;
-
-  const score =
-    languageDiversityScore * weights.languageDiversity +
-    repoCountScore * weights.repoCountNormalized +
-    frameworkScore * weights.frameworkVariety;
-
-  return Math.round(score * 100);
+  const exploration = (repoCountNormalized * 50) + (languageCountNormalized * 50);
+  return Math.round(exploration);
 }
 
 /**
@@ -46,23 +29,11 @@ function calculateExploration(metrics: AnalysisMetrics): number {
  * Signals: large repos, long project lifespan, low abandonment
  */
 function calculateDiscipline(metrics: AnalysisMetrics): number {
-  // Large repos indicate long-term commitment
-  const largeRepoScore = Math.min(metrics.largeRepoRatio * 4, 1);
+  const avgRepoSizeNormalized = Math.min(metrics.avgRepoSize / 10000, 1);
+  const projectLongevityNormalized = Math.min(metrics.avgProjectLongevity / 1095, 1); // 3 years = 1095 days
 
-  // Long-lived projects indicate discipline
-  const longevityScore = Math.min(metrics.avgProjectLongevity / 500, 1); // Normalize to 500 days
-
-  // Low abandonment indicates finish-what-you-start mentality
-  const lowAbandonmentScore = 1 - metrics.abandonedRepoRatio;
-
-  const weights = ANALYSIS_CONFIG.genomeWeights.discipline;
-
-  const score =
-    largeRepoScore * weights.avgRepoSizeNormalized +
-    longevityScore * weights.projectLongevity +
-    lowAbandonmentScore * weights.lowAbandonmentRatio;
-
-  return Math.round(score * 100);
+  const discipline = (avgRepoSizeNormalized * 40) + (projectLongevityNormalized * 30) + (metrics.activityConcentration * 30);
+  return Math.round(discipline);
 }
 
 /**
@@ -70,26 +41,8 @@ function calculateDiscipline(metrics: AnalysisMetrics): number {
  * Signals: many small repos, rapid creation, technology variety
  */
 function calculateExperimentation(metrics: AnalysisMetrics): number {
-  // Small repos indicate experiments
-  const smallRepoScore = metrics.smallRepoRatio;
-
-  // Rapid repo creation indicates frequent experimentation
-  const creationRateScore = Math.min(metrics.creationFrequency / 5, 1); // 5 repos/year = max
-
-  // Language diversity shows trying different tech
-  const languageDiversityScore = Math.min(
-    metrics.languageDiversity * 1.5,
-    1
-  );
-
-  const weights = ANALYSIS_CONFIG.genomeWeights.experimentation;
-
-  const score =
-    smallRepoScore * weights.smallRepoRatio +
-    creationRateScore * weights.repoCreationRate +
-    languageDiversityScore * weights.languageDiversity;
-
-  return Math.round(score * 100);
+  const experimentation = (metrics.smallRepoRatio * 60) + (metrics.abandonedRepoRatio * 40);
+  return Math.round(experimentation);
 }
 
 /**
@@ -97,23 +50,10 @@ function calculateExperimentation(metrics: AnalysisMetrics): number {
  * Signals: steady commit frequency, regular activity, long contribution span
  */
 function calculateConsistency(metrics: AnalysisMetrics): number {
-  // Commit consistency indicates regular coding patterns
-  const commitConsistencyScore = metrics.commitConsistency;
+  const commitFrequencyNormalized = Math.min(metrics.commitFrequency / 60, 1);
 
-  // Steady commit frequency
-  const frequencyScore = Math.min(metrics.commitFrequency / 100, 1); // 100 commits/year = max
-
-  // Long activity span
-  const activitySpanScore = Math.min(metrics.oldestRepoAge / 1825, 1); // 5 years = max
-
-  const weights = ANALYSIS_CONFIG.genomeWeights.consistency;
-
-  const score =
-    commitConsistencyScore * weights.commitConsistency +
-    frequencyScore * weights.commitFrequency +
-    activitySpanScore * weights.activitySpan;
-
-  return Math.round(score * 100);
+  const consistency = commitFrequencyNormalized * 100;
+  return Math.round(consistency);
 }
 
 /**
@@ -136,11 +76,9 @@ export function calculateConfidence(
   topScore: number,
   secondScore: number
 ): number {
+  // Confidence based on score gap
   const difference = topScore - secondScore;
-  // Normalize to 0-100
-  // Larger difference = higher confidence
-  const confidence = Math.min((difference / 10) * 100, 100);
-  return Math.round(confidence);
+  return Math.max(0, difference); // Representing the percentage
 }
 
 /**

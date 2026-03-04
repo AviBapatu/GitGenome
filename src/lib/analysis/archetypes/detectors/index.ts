@@ -22,43 +22,25 @@ export function detectNightOwl(
   let score = 0;
   const evidence: string[] = [];
 
-  // Night commit ratio is the primary signal
-  if (metrics.nightCommitRatio > SCORING_THRESHOLDS.nightCommitRatio.veryHigh) {
-    score += 4;
-    evidence.push(
-      `${Math.round(metrics.nightCommitRatio * 100)}% of commits occur after ${ANALYSIS_CONFIG.nightStartHour}:00 PM`
-    );
-  } else if (metrics.nightCommitRatio > SCORING_THRESHOLDS.nightCommitRatio.high) {
-    score += 3;
-    evidence.push(
-      `${Math.round(metrics.nightCommitRatio * 100)}% of commits occur after 10 PM`
-    );
-  } else if (
-    metrics.nightCommitRatio > SCORING_THRESHOLDS.nightCommitRatio.moderate
-  ) {
-    score += 2;
-    evidence.push(
-      `${Math.round(metrics.nightCommitRatio * 100)}% of commits occur late at night`
-    );
+  if (metrics.nightCommitRatio > 0.35) {
+    score = metrics.nightCommitRatio * 100;
   }
 
-  // Moderate to high commit frequency supports Night Owl
-  if (metrics.commitFrequency > ANALYSIS_CONFIG.highCommitFrequency) {
-    score += 1;
-    evidence.push(`Moderate to high commit frequency: ${Math.round(metrics.commitFrequency)} commits/year`);
-  }
-
-  // Genome pattern check
-  if (genome.consistency > 60) {
-    score += 1;
-    evidence.push("Consistent late-night development pattern");
+  if (score > 0) {
+    evidence.push(`${Math.round(metrics.nightCommitRatio * 100)}% of commits occur late at night (22:00-05:00)`);
+    if (metrics.commitFrequency > 20) {
+      evidence.push(`Moderate to high commit frequency: ${Math.round(metrics.commitFrequency)} commits/month`);
+    }
+    if (score > 45) {
+      evidence.push(`Extreme night owl detected. This developer's primary productive hours are in the dark.`);
+    }
   }
 
   return {
     id: "night_owl",
     name: "Night Owl",
     creature: "Owl",
-    score: Math.min(score, 10),
+    score,
     description:
       "A developer who does their best work when the world is asleep. Thrives during late-night coding sessions.",
     evidence,
@@ -82,61 +64,25 @@ export function detectFrameworkCollector(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  let score = 0;
+  const score = (genome.exploration * 0.4) + (genome.experimentation * 0.4) + ((1 - metrics.activityConcentration) * 20);
   const evidence: string[] = [];
 
-  // Repo count signal
-  if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.veryHigh) {
-    score += 3;
-    evidence.push(`${metrics.repoCount} repositories analyzed`);
-  } else if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.high) {
-    score += 2;
-    evidence.push(`${metrics.repoCount} repositories created`);
+  evidence.push(`${metrics.repoCount} repositories analyzed`);
+  evidence.push(`${metrics.languageCount} programming languages detected`);
+  if (metrics.smallRepoRatio > 0) {
+    evidence.push(`${Math.round(metrics.smallRepoRatio * 100)}% of projects are small experiments`);
   }
-
-  // Language diversity signal
-  if (metrics.languageDiversity > SCORING_THRESHOLDS.languageDiversity.veryHigh) {
-    score += 2;
-    evidence.push(
-      `${metrics.languageCount} programming languages detected - extensive technology exploration`
-    );
-  } else if (
-    metrics.languageDiversity > SCORING_THRESHOLDS.languageDiversity.high
-  ) {
-    score += 1;
-    evidence.push(`${metrics.languageCount} different programming languages used`);
-  }
-
-  // Small repo ratio signal (many experiments)
-  if (metrics.smallRepoRatio > 0.6) {
-    score += 2;
-    evidence.push(
-      `${Math.round(metrics.smallRepoRatio * 100)}% of projects are small experiments`
-    );
-  } else if (metrics.smallRepoRatio > 0.4) {
-    score += 1;
-    evidence.push(`Many small experimental repositories`);
-  }
-
-  // Framework variety
-  if (metrics.frameworkKeywords.length > 5) {
-    score += 1;
-    evidence.push(
-      `${metrics.frameworkKeywords.length} different frameworks detected: ${metrics.frameworkKeywords.slice(0, 4).join(", ")}`
-    );
-  }
-
-  // Genome pattern
-  if (genome.exploration > 70) {
-    score += 1;
-    evidence.push("Very high technology exploration score");
+  if (metrics.activityConcentration < 0.5) {
+    evidence.push(`Development activity is spread across many repositories (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
+  } else {
+    evidence.push(`Most activity concentrated in top repositories (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
   }
 
   return {
     id: "framework_collector",
     name: "Framework Collector",
     creature: "Raccoon",
-    score: Math.min(score, 10),
+    score: Math.round(score),
     description:
       "A developer obsessed with exploring new frameworks and technologies. Constantly experimenting with the latest tools.",
     evidence,
@@ -161,64 +107,23 @@ export function detectChaosBuilder(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  let score = 0;
+  const score = (genome.experimentation * 0.5) + ((100 - genome.consistency) * 0.3) + ((1 - metrics.activityConcentration) * 20);
   const evidence: string[] = [];
 
-  // Repo count signal
-  if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.veryHigh) {
-    score += 3;
-    evidence.push(`${metrics.repoCount} repositories - high experimentation rate`);
-  } else if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.high) {
-    score += 2;
+  evidence.push(`${metrics.repoCount} repositories - high experimentation rate`);
+
+  if (metrics.abandonedRepoRatio > 0) {
+    evidence.push(`${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are unfinished or abandoned`);
   }
 
-  // Abandoned repo ratio signal
-  if (metrics.abandonedRepoRatio > SCORING_THRESHOLDS.abandonmentRatio.high) {
-    score += 3;
-    evidence.push(
-      `${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are unfinished or abandoned`
-    );
-  } else if (
-    metrics.abandonedRepoRatio > SCORING_THRESHOLDS.abandonmentRatio.moderate
-  ) {
-    score += 2;
-    evidence.push(`Many unfinished projects detected`);
-  }
-
-  // High commit frequency
-  if (
-    metrics.commitFrequency > ANALYSIS_CONFIG.veryHighCommitFrequency
-  ) {
-    score += 2;
-    evidence.push(
-      `Very high commit frequency: ${Math.round(metrics.commitFrequency)} commits/year`
-    );
-  } else if (metrics.commitFrequency > ANALYSIS_CONFIG.highCommitFrequency) {
-    score += 1;
-    evidence.push(`High activity level with frequent commits`);
-  }
-
-  // Language diversity
-  if (metrics.languageDiversity > SCORING_THRESHOLDS.languageDiversity.high) {
-    score += 1;
-    evidence.push(`Programming language variety: ${metrics.languageCount} languages`);
-  }
-
-  // Genome pattern
-  if (genome.experimentation > 75) {
-    score += 1;
-    evidence.push("Very high experimentation pattern");
-  }
-  if (genome.consistency < 40) {
-    score += 1;
-    evidence.push("Inconsistent commit patterns suggest frequent context switching");
-  }
+  evidence.push(`Activity consistency is low, indicating frequent context switching`);
+  evidence.push(`Development spread across projects (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
 
   return {
     id: "chaos_builder",
     name: "Chaos Builder",
     creature: "Gremlin",
-    score: Math.min(score, 10),
+    score: Math.round(score),
     description:
       "A developer who thrives on experimentation and innovation. High velocity, many ideas, constant iteration.",
     evidence,
@@ -243,77 +148,24 @@ export function detectBuilderBeaver(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  let score = 0;
+  const score = (genome.discipline * 0.5) + (genome.consistency * 0.3) + (metrics.activityConcentration * 20);
   const evidence: string[] = [];
 
-  // Repo count in sweet spot (focused but experienced)
-  if (
-    metrics.repoCount >= ANALYSIS_CONFIG.maxReposForDiscipline &&
-    metrics.repoCount <=
-    ANALYSIS_CONFIG.minReposForExperimentation
-  ) {
-    score += 1;
-    evidence.push(`${metrics.repoCount} carefully crafted repositories`);
+  evidence.push(`${metrics.repoCount} carefully crafted repositories`);
+
+  if (metrics.avgRepoSize > 0) {
+    evidence.push(`Repositories are substantial (avg ${Math.round(metrics.avgRepoSize / 1000)}MB)`);
   }
 
-  // Large average repo size
-  if (metrics.avgRepoSize > 10000) {
-    score += 2;
-    evidence.push(
-      `Large repositories detected (avg ${Math.round(metrics.avgRepoSize / 1000)}MB) - indicates long-term projects`
-    );
-  } else if (metrics.avgRepoSize > 5000) {
-    score += 1;
-    evidence.push(`Substantial repositories suggest substantial projects`);
-  }
-
-  // Low abandonment ratio
-  if (
-    metrics.abandonedRepoRatio < SCORING_THRESHOLDS.abandonmentRatio.low
-  ) {
-    score += 1;
-    evidence.push(
-      `Only ${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are inactive - strong follow-through`
-    );
-  } else if (metrics.abandonedRepoRatio < SCORING_THRESHOLDS.abandonmentRatio.moderate) {
-    score += 0.5;
-    evidence.push(`Low abandonment ratio indicates commitment to projects`);
-  }
-
-  // High commit consistency
-  if (metrics.commitConsistency > SCORING_THRESHOLDS.commitConsistency.high) {
-    score += 1;
-    evidence.push(
-      `Consistent commit patterns suggest structured development methodology`
-    );
-  } else if (metrics.commitConsistency > SCORING_THRESHOLDS.commitConsistency.moderate) {
-    score += 0.5;
-    evidence.push(`Regular commit patterns detected`);
-  }
-
-  // High project longevity
-  if (metrics.avgProjectLongevity > 700) {
-    score += 1;
-    evidence.push(
-      `Projects maintained for long periods (avg ${Math.round(metrics.avgProjectLongevity / 30)} months active)`
-    );
-  }
-
-  // Genome pattern
-  if (genome.discipline > 70) {
-    score += 1;
-    evidence.push("High discipline and structured approach to development");
-  }
-  if (genome.experimentation < 40) {
-    score += 1;
-    evidence.push("Focused approach with minimal context switching");
-  }
+  evidence.push(`Only ${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are inactive`);
+  evidence.push(`Consistent commit patterns suggest structured development methodology`);
+  evidence.push(`Highly focused effort (Activity Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
 
   return {
     id: "builder_beaver",
     name: "Builder Beaver",
     creature: "Beaver",
-    score: Math.min(score, 10),
+    score: Math.round(score),
     description:
       "A disciplined, long-term builder. Creates substantial, well-maintained projects with consistent progress.",
     evidence,

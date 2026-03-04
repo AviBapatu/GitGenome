@@ -100,18 +100,31 @@ export function SummaryPanel({ analysis }: { analysis: DeveloperProfile }) {
             <motion.section variants={childVariants} className="space-y-4">
                 <HandwrittenTitle type="circle">Key Traits</HandwrittenTitle>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    {analysis.traits.slice(0, 4).map((trait, i) => (
+                    {analysis.traits.length > 0 ? (
+                        analysis.traits.slice(0, 4).map((trait, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 * i, duration: 0.4 }}
+                                className="bg-slate-50 p-3 rounded-sm border-l-4 border-indigo-400"
+                            >
+                                <p className="font-bold font-patrick text-slate-800">{trait.name}</p>
+                                <p className="text-xs font-sans text-slate-600 mt-1">{trait.explanation}</p>
+                            </motion.div>
+                        ))
+                    ) : (
                         <motion.div
-                            key={i}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 * i, duration: 0.4 }}
-                            className="bg-slate-50 p-3 rounded-sm border-l-4 border-indigo-400"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="bg-slate-50 p-3 rounded-sm border-l-4 border-slate-300 col-span-1 md:col-span-2"
                         >
-                            <p className="font-bold font-patrick text-slate-800">{trait.name}</p>
-                            <p className="text-xs font-sans text-slate-600 mt-1">{trait.explanation}</p>
+                            <p className="font-bold font-patrick text-slate-500 italic">No specific traits uncovered yet.</p>
+                            <p className="text-xs font-sans text-slate-400 mt-1">
+                                The genome analyzer needs more diverse activity to confidently map specific key traits.
+                            </p>
                         </motion.div>
-                    ))}
+                    )}
                 </div>
             </motion.section>
         </motion.div>
