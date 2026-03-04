@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useGithubUser } from "@/hooks/useGithubUser";
 import { useGithubRepos } from "@/hooks/useGithubRepos";
 import { AnalysisPipeline } from "@/components/analysis/analysis-pipeline";
+import { DeveloperReportLayout } from "@/components/report/developer-report-layout";
 import { analyzeDeveloper } from "@/lib/analysis/engine";
 
 export default function UserPage() {
@@ -20,23 +21,23 @@ export default function UserPage() {
 
     const steps = [
         {
-            label: "Fetching GitHub profile",
+            label: "Extracting profile DNA...",
             done: !!user,
         },
         {
-            label: "Scanning repositories",
+            label: "Scanning commit behavior...",
             done: !!repos,
         },
         {
-            label: "Calculating language distribution",
+            label: "Analyzing language genetics...",
             done: !!repos,
         },
         {
-            label: "Detecting developer traits",
+            label: "Detecting developer mutations...",
             done: !!repos,
         },
         {
-            label: "Generating genome report",
+            label: "Generating genome report...",
             done: !!repos,
         },
     ];
@@ -50,11 +51,11 @@ export default function UserPage() {
 
     if (userError || repoError) {
         return (
-            <main className="min-h-screen flex items-center justify-center">
+            <main className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-red-500 mb-2">Error Loading Data</h1>
-                    <p className="text-muted-foreground">
-                        {userError?.message || repoError?.message || "Something went wrong"}
+                    <h1 className="text-2xl font-bold font-poppins text-pink-500 mb-2">Genome Sequence Failed</h1>
+                    <p className="text-slate-600">
+                        {userError?.message || repoError?.message || "Something went wrong in the lab."}
                     </p>
                 </div>
             </main>
@@ -63,19 +64,24 @@ export default function UserPage() {
 
     if (ready) {
         return (
-            <main className="p-12">
-                <pre className="bg-muted p-4 rounded-lg overflow-auto">
-                    {JSON.stringify(analysis, null, 2)}
-                </pre>
-            </main>
+            <DeveloperReportLayout
+                user={user}
+                repos={repos}
+                analysis={analysis}
+            />
         );
     }
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center gap-8">
-            <h1 className="text-3xl font-bold">Analyzing {username}</h1>
+        <main className="min-h-screen flex flex-col items-center justify-center gap-8 bg-slate-50">
+            <div className="text-center">
+                <h1 className="text-3xl font-bold font-poppins mb-2">Scanning Specimen</h1>
+                <p className="text-xl text-indigo-600 font-semibold">@{username}</p>
+            </div>
 
-            <AnalysisPipeline steps={steps} />
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-md w-full">
+                <AnalysisPipeline steps={steps} />
+            </div>
         </main>
     );
 }
