@@ -89,7 +89,7 @@ export function RaccoonCreature() {
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleClick}
             className={`relative z-20 ${poppedOut ? "cursor-grab active:cursor-grabbing" : ""}`}
-            style={{ width: "150px", height: "180px" }}
+            style={{ width: "200px", height: "240px" }}
         >
             {/* Hover label */}
             <motion.div
@@ -123,7 +123,7 @@ export function RaccoonCreature() {
                 <svg
                     viewBox="0 0 150 190"
                     className="w-full h-full"
-                    style={{ filter: "drop-shadow(0 6px 18px rgba(251,146,60,0.25))" }}
+                    style={{ filter: "drop-shadow(0 8px 24px rgba(251,146,60,0.35))" }}
                 >
                     <defs>
                         {/*
@@ -132,12 +132,12 @@ export function RaccoonCreature() {
                          * slightly-off quality like they were drawn with a felt-tip pen.
                          */}
                         <filter id="raccoonSketch" x="-5%" y="-5%" width="110%" height="110%">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="noise" />
-                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+                            <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="7" result="noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.8" xChannelSelector="R" yChannelSelector="G" />
                         </filter>
-                        {/* Warm top light */}
+                        {/* Warm top light — matches workshop lamp */}
                         <radialGradient id="topLight" cx="50%" cy="10%" r="70%">
-                            <stop offset="0%" stopColor="#fb923c" stopOpacity="0.35" />
+                            <stop offset="0%" stopColor="#FFD48A" stopOpacity="0.55" />
                             <stop offset="100%" stopColor="transparent" stopOpacity="0" />
                         </radialGradient>
                         {/* Body fill gradient */}
@@ -233,11 +233,11 @@ export function RaccoonCreature() {
                         filter="url(#raccoonSketch)"
                     />
 
-                    {/* ─── HEAD (tracker group) ─── */}
+                    {/* ─── HEAD (tracker group) — slight curious tilt ─── */}
                     <motion.g
                         style={{ originX: "72px", originY: "82px" }}
                         animate={{
-                            rotate: isHovered ? headRotate : headRotate * 0.5,
+                            rotate: isHovered ? headRotate : headRotate * 0.5 - 5,
                         }}
                         transition={{ duration: 0.4, ease: "easeOut" }}
                     >
@@ -343,6 +343,25 @@ export function RaccoonCreature() {
                                 times: [0, 0.92, 0.95, 0.98, 1],
                                 ease: "easeIn",
                             }}
+                        />
+
+                        {/* Raised left eyebrow — curious expression */}
+                        <path
+                            d="M 48 68 Q 54 63, 62 65"
+                            stroke="#5a5a5a"
+                            strokeWidth="2"
+                            fill="none"
+                            strokeLinecap="round"
+                            filter="url(#raccoonSketch)"
+                        />
+                        {/* Right eyebrow — slightly lower, asymmetric */}
+                        <path
+                            d="M 78 67 Q 84 65, 90 67"
+                            stroke="#5a5a5a"
+                            strokeWidth="1.5"
+                            fill="none"
+                            strokeLinecap="round"
+                            filter="url(#raccoonSketch)"
                         />
 
                         {/* Nose */}

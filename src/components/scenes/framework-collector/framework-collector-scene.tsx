@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DeveloperProfile } from "@/types/analysis";
 import { soundManager } from "@/components/sound/sound-manager";
@@ -13,6 +13,7 @@ import { RaccoonCreature } from "@/components/creatures/raccoon";
 export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfile }) {
     const [raccoonCenter, setRaccoonCenter] = useState({ x: 0, y: 0 });
     const raccoonWrapperRef = useRef<HTMLDivElement>(null);
+    const [mouseNorm, setMouseNorm] = useState({ x: 0.5, y: 0.5 });
 
     // ── Sound lifecycle ────────────────────────────────────────────────────────
     useEffect(() => {
@@ -20,6 +21,13 @@ export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfi
         return () => {
             soundManager.stopAmbience();
         };
+    }, []);
+
+    // ── Mouse parallax tracking ────────────────────────────────────────────────
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        const nx = e.clientX / window.innerWidth;
+        const ny = e.clientY / window.innerHeight;
+        setMouseNorm({ x: nx, y: ny });
     }, []);
 
     // ── Calculate raccoon centre for logo orbits ───────────────────────────────
@@ -33,9 +41,7 @@ export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfi
                 });
             }
         };
-
-        // Initial calculation — needs a short delay for layout to settle
-        const timer = setTimeout(updateCenter, 300);
+        const timer = setTimeout(updateCenter, 350);
         window.addEventListener("resize", updateCenter);
         return () => {
             clearTimeout(timer);
@@ -44,9 +50,12 @@ export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfi
     }, []);
 
     return (
-        <div className="relative w-full h-screen overflow-y-auto overflow-x-hidden">
+        <div
+            className="relative w-full h-screen overflow-y-auto overflow-x-hidden"
+            onMouseMove={handleMouseMove}
+        >
             {/* Layer 0: Workshop atmosphere */}
-            <WorkshopBackground />
+            <WorkshopBackground mouseX={mouseNorm.x} mouseY={mouseNorm.y} />
 
             {/* Layer 1: Workbench furniture — bottom right */}
             <TechWorkbench />
@@ -55,7 +64,7 @@ export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfi
             <motion.div
                 ref={raccoonWrapperRef}
                 className="fixed z-20"
-                style={{ right: "148px", bottom: "195px" }}
+                style={{ right: "160px", bottom: "250px" }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.4 }}
@@ -71,12 +80,12 @@ export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfi
                 />
             )}
 
-            {/* Layer 4: Notebook report — slides in from below */}
+            {/* Layer 4: Notebook report — slides in from below, shifted left */}
             <motion.div
                 initial={{ y: 180, rotate: 1.5, opacity: 0 }}
                 animate={{ y: 0, rotate: 0, opacity: 1 }}
                 transition={{ delay: 2.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                className="relative z-30 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
+                className="relative z-30 pt-16 px-4 pb-20 pointer-events-none md:w-[52%] md:ml-4"
             >
                 <div className="pointer-events-auto">
                     <NotebookLayout analysis={analysis} />
