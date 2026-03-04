@@ -1,16 +1,19 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useGithubUser } from "@/hooks/useGithubUser";
 import { useGithubRepos } from "@/hooks/useGithubRepos";
 import { AnalysisPipeline } from "@/components/analysis/analysis-pipeline";
-import { DeveloperReportLayout } from "@/components/report/developer-report-layout";
+import { GenomeExperience } from "@/components/experience/genome-experience";
 import { analyzeDeveloper } from "@/lib/analysis/engine";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function UserPage() {
     const params = useParams();
     const username = params.username as string;
+
+    const [showScene, setShowScene] = useState(false);
 
     const { data: user, isLoading: userLoading, error: userError } = useGithubUser(
         username
@@ -47,7 +50,15 @@ export default function UserPage() {
         return analyzeDeveloper(repos);
     }, [repos]);
 
-    const ready = user && repos && analysis;
+    const loadingFinished = user && repos && analysis;
+
+    // Cinematic delay before scene switch
+    useEffect(() => {
+        if (loadingFinished) {
+            const timer = setTimeout(() => setShowScene(true), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [loadingFinished]);
 
     if (userError || repoError) {
         return (
@@ -62,26 +73,43 @@ export default function UserPage() {
         );
     }
 
-    if (ready) {
-        return (
-            <DeveloperReportLayout
-                user={user}
-                repos={repos}
-                analysis={analysis}
-            />
-        );
-    }
-
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center gap-8 bg-slate-50">
-            <div className="text-center">
-                <h1 className="text-3xl font-bold font-poppins mb-2">Scanning Specimen</h1>
-                <p className="text-xl text-indigo-600 font-semibold">@{username}</p>
-            </div>
+        <AnimatePresence mode="wait">
+            {showScene && loadingFinished ? (
+                <GenomeExperience key="scene" analysis={analysis} />
+            ) : (
+                <motion.main
+                    key="loader"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                    transition={{ duration: 0.8 }}
+                    className="min-h-screen flex flex-col items-center justify-center gap-8 bg-slate-50 relative z-50"
+                >
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold font-poppins mb-2">Scanning Specimen</h1>
+                        <p className="text-xl text-indigo-600 font-semibold">@{username}</p>
+                    </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-md w-full">
-                <AnalysisPipeline steps={steps} />
-            </div>
-        </main>
+                    <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-md w-full relative overflow-hidden">
+                        <AnalysisPipeline steps={steps} />
+
+                        {loadingFinished && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="mt-8 pt-6 border-t border-slate-100 text-center"
+                            >
+                                <p className="text-sm font-semibold text-emerald-500 mb-1 tracking-widest uppercase">Match Found</p>
+                                <p className="text-xl font-poppins font-bold text-slate-800 animate-pulse">
+                                    {analysis.archetype} Detected
+                                </p>
+                            </motion.div>
+                        )}
+                    </div>
+                </motion.main>
+            )}
+        </AnimatePresence>
     );
 }
