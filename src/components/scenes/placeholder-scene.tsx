@@ -1,6 +1,18 @@
+"use client";
+
+import { useEffect } from "react";
 import { DeveloperProfile } from "@/types/analysis";
 
 export function PlaceholderScene({ analysis }: { analysis: DeveloperProfile }) {
+    // Lifecycle stub — mirrors the required cleanup pattern.
+    // Add sounds / timers here when the real scene is built,
+    // and clean them up in the return callback.
+    useEffect(() => {
+        return () => {
+            // cleanup: stop sounds, clear timers, remove listeners
+        };
+    }, []);
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-slate-900 text-white font-mono flex-col space-y-4 p-8">
             <h1 className="text-4xl text-emerald-400">Mock Scene: {analysis.archetype.name}</h1>
