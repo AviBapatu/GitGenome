@@ -87,7 +87,7 @@ export default function Home() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. torvalds"
+              placeholder="e.g. AviBapatu"
               className="w-full bg-transparent border-2 border-slate-700 rounded-lg px-4 py-3 text-xl font-patrick focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-800 transition-all text-center sm:text-left
               shadow-[2px_2px_0px_0px_rgba(51,65,85,1)] hover:shadow-[4px_4px_0px_0px_rgba(51,65,85,1)] hover:-translate-y-0.5"
               style={{ borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px' }}
@@ -134,12 +134,12 @@ export default function Home() {
 
             {/* Sticky Note 3 */}
             <button
-              onClick={() => setUsername("leerob")}
+              onClick={() => setUsername("AviBapatu")}
               className="bg-pink-100 hover:bg-pink-200 text-slate-800 p-4 shadow-md font-caveat text-2xl transform rotate-6 hover:rotate-2 hover:scale-105 transition-all w-32 h-32 flex items-center justify-center text-center relative"
               style={{ borderRadius: '4px 17px 2px 14px / 12px 2px 18px 5px' }}
             >
               <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-red-500 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.5),1px_2px_3px_rgba(0,0,0,0.3)]" />
-              Lee<br />Robinson
+              Avi<br />Bapatu
             </button>
           </div>
         </div>
