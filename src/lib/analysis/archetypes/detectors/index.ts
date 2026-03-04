@@ -24,19 +24,19 @@ export function detectNightOwl(
 
   // Night commit ratio is the primary signal
   if (metrics.nightCommitRatio > SCORING_THRESHOLDS.nightCommitRatio.veryHigh) {
-    score += 3;
+    score += 4;
     evidence.push(
       `${Math.round(metrics.nightCommitRatio * 100)}% of commits occur after ${ANALYSIS_CONFIG.nightStartHour}:00 PM`
     );
   } else if (metrics.nightCommitRatio > SCORING_THRESHOLDS.nightCommitRatio.high) {
-    score += 2;
+    score += 3;
     evidence.push(
       `${Math.round(metrics.nightCommitRatio * 100)}% of commits occur after 10 PM`
     );
   } else if (
     metrics.nightCommitRatio > SCORING_THRESHOLDS.nightCommitRatio.moderate
   ) {
-    score += 1;
+    score += 2;
     evidence.push(
       `${Math.round(metrics.nightCommitRatio * 100)}% of commits occur late at night`
     );
@@ -87,10 +87,10 @@ export function detectFrameworkCollector(
 
   // Repo count signal
   if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.veryHigh) {
-    score += 2;
+    score += 3;
     evidence.push(`${metrics.repoCount} repositories analyzed`);
   } else if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.high) {
-    score += 1;
+    score += 2;
     evidence.push(`${metrics.repoCount} repositories created`);
   }
 
@@ -166,22 +166,22 @@ export function detectChaosBuilder(
 
   // Repo count signal
   if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.veryHigh) {
-    score += 2;
+    score += 3;
     evidence.push(`${metrics.repoCount} repositories - high experimentation rate`);
   } else if (metrics.repoCount > SCORING_THRESHOLDS.repoCount.high) {
-    score += 1;
+    score += 2;
   }
 
   // Abandoned repo ratio signal
   if (metrics.abandonedRepoRatio > SCORING_THRESHOLDS.abandonmentRatio.high) {
-    score += 2;
+    score += 3;
     evidence.push(
       `${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are unfinished or abandoned`
     );
   } else if (
     metrics.abandonedRepoRatio > SCORING_THRESHOLDS.abandonmentRatio.moderate
   ) {
-    score += 1;
+    score += 2;
     evidence.push(`Many unfinished projects detected`);
   }
 
@@ -250,19 +250,19 @@ export function detectBuilderBeaver(
   if (
     metrics.repoCount >= ANALYSIS_CONFIG.maxReposForDiscipline &&
     metrics.repoCount <=
-      ANALYSIS_CONFIG.minReposForExperimentation
+    ANALYSIS_CONFIG.minReposForExperimentation
   ) {
     score += 1;
     evidence.push(`${metrics.repoCount} carefully crafted repositories`);
   }
 
   // Large average repo size
-  if (metrics.avgRepoSize > 5000) {
+  if (metrics.avgRepoSize > 10000) {
     score += 2;
     evidence.push(
       `Large repositories detected (avg ${Math.round(metrics.avgRepoSize / 1000)}MB) - indicates long-term projects`
     );
-  } else if (metrics.avgRepoSize > 2000) {
+  } else if (metrics.avgRepoSize > 5000) {
     score += 1;
     evidence.push(`Substantial repositories suggest substantial projects`);
   }
@@ -271,28 +271,28 @@ export function detectBuilderBeaver(
   if (
     metrics.abandonedRepoRatio < SCORING_THRESHOLDS.abandonmentRatio.low
   ) {
-    score += 2;
+    score += 1;
     evidence.push(
       `Only ${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are inactive - strong follow-through`
     );
   } else if (metrics.abandonedRepoRatio < SCORING_THRESHOLDS.abandonmentRatio.moderate) {
-    score += 1;
+    score += 0.5;
     evidence.push(`Low abandonment ratio indicates commitment to projects`);
   }
 
   // High commit consistency
   if (metrics.commitConsistency > SCORING_THRESHOLDS.commitConsistency.high) {
-    score += 2;
+    score += 1;
     evidence.push(
       `Consistent commit patterns suggest structured development methodology`
     );
   } else if (metrics.commitConsistency > SCORING_THRESHOLDS.commitConsistency.moderate) {
-    score += 1;
+    score += 0.5;
     evidence.push(`Regular commit patterns detected`);
   }
 
   // High project longevity
-  if (metrics.avgProjectLongevity > 400) {
+  if (metrics.avgProjectLongevity > 700) {
     score += 1;
     evidence.push(
       `Projects maintained for long periods (avg ${Math.round(metrics.avgProjectLongevity / 30)} months active)`

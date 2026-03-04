@@ -9,10 +9,10 @@ import { AnalysisMetrics } from "../metricsEngine";
 import { DeveloperGenome } from "../genomeEngine";
 
 const ARCHETYPE_PRIORITY = [
-  "builder_beaver",
-  "night_owl",
-  "framework_collector",
   "chaos_builder",
+  "framework_collector",
+  "night_owl",
+  "builder_beaver",
 ];
 
 /**
