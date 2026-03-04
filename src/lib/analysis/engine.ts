@@ -2,8 +2,8 @@ import { GithubRepo } from "@/types/github";
 import { DeveloperProfile, Trait, Mutation } from "@/types/analysis";
 
 import { countLanguages, dominantLanguage, inactiveRepoRatio } from "./metrics";
-import { detectSerialStarter, detectTypeScriptFanatic } from "./traits";
-import { detectAbandonedProjects, detectFrameworkCollector } from "./mutations";
+import { detectSerialStarter, detectTypeScriptFanatic, detectRapidExperimenter, detectBreakFixCycle, detectMultiLanguageBouncer } from "./traits";
+import { detectAbandonedProjects, detectFrameworkCollector, detectConsoleLogAddict, detectStackOverflowSummoner, detectInfiniteRefactorer, detectDependencyExplosion } from "./mutations";
 import { detectArchetype } from "./archetypes/engine";
 
 export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
@@ -11,17 +11,42 @@ export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
     const dominant = dominantLanguage(languageMap);
     const inactiveRatio = inactiveRepoRatio(repos);
 
-    const traits = [
+    const archetype = detectArchetype(repos);
+
+    // Build traits based on archetype
+    let traits: Trait[] = [
         detectSerialStarter(repos),
         detectTypeScriptFanatic(languageMap),
-    ].filter(Boolean) as Trait[];
+    ];
 
-    const mutations = [
+    // Add Chaos Builder specific traits
+    if (archetype.id === "chaos_builder") {
+        traits = traits.concat([
+            detectRapidExperimenter(repos),
+            detectBreakFixCycle(repos),
+            detectMultiLanguageBouncer(languageMap),
+        ]);
+    }
+
+    traits = traits.filter(Boolean) as Trait[];
+
+    // Build mutations based on archetype
+    let mutations: Mutation[] = [
         detectAbandonedProjects(inactiveRatio),
         detectFrameworkCollector(languageMap),
-    ].filter(Boolean) as Mutation[];
+    ];
 
-    const archetype = detectArchetype(repos);
+    // Add Chaos Builder specific mutations
+    if (archetype.id === "chaos_builder") {
+        mutations = mutations.concat([
+            detectConsoleLogAddict(repos),
+            detectStackOverflowSummoner(repos),
+            detectInfiniteRefactorer(repos),
+            detectDependencyExplosion(repos),
+        ]);
+    }
+
+    mutations = mutations.filter(Boolean) as Mutation[];
 
     return {
         archetype,
@@ -31,3 +56,4 @@ export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
         mutations,
     };
 }
+

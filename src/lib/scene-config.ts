@@ -18,11 +18,11 @@ export const sceneConfig: Record<string, SceneConfig> = {
         color: "#10b981",
         environment: "Tech Forest",
     },
-    chaos_coder: {
-        name: "Chaos Coder",
-        creature: "Fox",
-        color: "#f59e0b",
-        environment: "Neon Wasteland",
+    chaos_builder: {
+        name: "Chaos Builder",
+        creature: "Gremlin",
+        color: "#ff3366",
+        environment: "Hacker Lab",
     },
 };
 
