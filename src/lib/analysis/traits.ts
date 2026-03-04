@@ -52,7 +52,7 @@ export function detectRapidExperimenter(repos: GithubRepo[]): Trait | null {
 export function detectBreakFixCycle(repos: GithubRepo[]): Trait | null {
     // Check for pattern of frequent commits
     const avgCommitsPerRepo = repos.reduce((sum, r) => sum + (r.defaultBranchRef?.target?.history?.totalCount || 0), 0) / Math.max(repos.length, 1);
-    
+
     if (avgCommitsPerRepo > 50) {
         return {
             name: "Break-Fix Cycle Master",

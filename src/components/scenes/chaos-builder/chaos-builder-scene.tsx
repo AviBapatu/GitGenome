@@ -107,7 +107,7 @@ export function ChaosBuilderScene({ analysis }: { analysis: DeveloperProfile }) 
             {/* Audio Toggle Button */}
             <button
                 onClick={toggleMute}
-                className="fixed top-6 right-6 z-50 w-10 h-10 rounded-full bg-[#1a1a2e]/50 backdrop-blur-md border border-[#ff3366] flex items-center justify-center text-[#ff3366] hover:text-white hover:bg-[#ff3366]/20 transition-colors"
+                className="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-[#1a1a2e]/50 backdrop-blur-md border border-[#ff3366] flex items-center justify-center text-[#ff3366] hover:text-white hover:bg-[#ff3366]/20 transition-colors"
                 title={isMuted ? "Unmute Ambient Sound" : "Mute Ambient Sound"}
             >
                 {isMuted ? (

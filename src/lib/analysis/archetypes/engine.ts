@@ -3,12 +3,14 @@ import { Archetype } from "./types";
 import { detectNightOwl } from "./detectors/detectNightOwl";
 import { detectFrameworkCollector } from "./detectors/detectFrameworkCollector";
 import { detectChaosBuilder } from "./detectors/detectChaosCoder";
+import { detectBuilderBeaver } from "./detectors/detectBuilderBeaver";
 
 export function detectArchetype(repos: GithubRepo[]): Archetype {
     const detectors = [
         detectNightOwl,
         detectFrameworkCollector,
-        detectChaosBuilder
+        detectChaosBuilder,
+        detectBuilderBeaver
     ];
 
     const scoredArchetypes = detectors.map(detector => detector(repos));

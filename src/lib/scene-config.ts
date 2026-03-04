@@ -24,6 +24,12 @@ export const sceneConfig: Record<string, SceneConfig> = {
         color: "#ff3366",
         environment: "Hacker Lab",
     },
+    builder_beaver: {
+        name: "Builder Beaver",
+        creature: "Beaver",
+        color: "#C8A97E",
+        environment: "River Construction",
+    },
 };
 
 /** IDs of all known archetypes, useful for the dev switcher. */

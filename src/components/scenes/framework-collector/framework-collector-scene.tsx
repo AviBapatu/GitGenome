@@ -84,7 +84,7 @@ export function FrameworkCollectorScene({ analysis }: { analysis: DeveloperProfi
                 initial={{ y: 180, rotate: 1.5, opacity: 0 }}
                 animate={{ y: 0, rotate: 0, opacity: 1 }}
                 transition={{ delay: 2.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                className="relative z-30 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
+                className="relative z-40 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
             >
                 <div className="pointer-events-auto">
                     <NotebookLayout analysis={analysis} />

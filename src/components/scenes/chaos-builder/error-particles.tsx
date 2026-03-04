@@ -72,16 +72,16 @@ export function ErrorParticles() {
                         ease: "easeInOut"
                     }}
                     style={{
-                        color: ["undefined", "NaN", "null"].includes(particle.text) 
-                            ? "#00eaff" 
-                            : particle.text === "404" 
-                            ? "#ff3366" 
+                        color: ["undefined", "NaN", "null"].includes(particle.text)
+                            ? "#00eaff"
+                            : particle.text === "404"
+                            ? "#ff3366"
                             : "#8a2be2",
                         textShadow: `0 0 8px ${
-                            ["undefined", "NaN", "null"].includes(particle.text) 
-                                ? "rgba(0,234,255,0.6)" 
-                                : particle.text === "404" 
-                                ? "rgba(255,51,102,0.6)" 
+                            ["undefined", "NaN", "null"].includes(particle.text)
+                                ? "rgba(0,234,255,0.6)"
+                                : particle.text === "404"
+                                ? "rgba(255,51,102,0.6)"
                                 : "rgba(138,43,226,0.6)"
                         }`
                     }}

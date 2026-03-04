@@ -2,28 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { DeveloperProfile } from "@/types/analysis";
-import { motion, useMotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import { soundManager } from "@/components/sound/sound-manager";
-import { OwlCreature } from "@/components/creatures/owl";
+import { BeaverCreature } from "@/components/creatures/beaver";
 import { NotebookLayout } from "@/components/ui/notebook-layout";
-import { NightBackground } from "./night-background";
-import { TreePerch } from "./tree-perch";
+import { RiverBackground } from "./river-background";
+import { WoodConstruction } from "./wood-construction";
+import { FloatingBlueprints } from "./floating-blueprints";
 
-export function NightOwlScene({ analysis }: { analysis: DeveloperProfile }) {
-    // Parallax motion tracking
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const [isMuted, setIsMuted] = useState(false); // Track sound state
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        mouseX.set(e.clientX);
-        mouseY.set(e.clientY);
-    };
+export function BuilderBeaverScene({ analysis }: { analysis: DeveloperProfile }) {
+    const [isMuted, setIsMuted] = useState(false);
 
     // Load background ambient noises
     useEffect(() => {
-        // We start the ambient loop. SoundManager will handle the Howl audio context
-        soundManager.playAmbience("/assets/sounds/night_ambience_loop.mp3");
+        // River and birds ambient sounds
+        soundManager.playAmbience("/assets/sounds/river_ambience_loop.mp3");
 
         return () => {
             soundManager.stopAmbience();
@@ -36,10 +29,7 @@ export function NightOwlScene({ analysis }: { analysis: DeveloperProfile }) {
     };
 
     return (
-        <div
-            onMouseMove={handleMouseMove}
-            className="relative w-full h-screen bg-slate-900 overflow-y-auto overflow-x-hidden"
-        >
+        <div className="relative w-full h-screen bg-[#EED9A4] overflow-y-auto overflow-x-hidden">
             {/* Audio Toggle Button in bottom right corner */}
             <button
                 onClick={toggleMute}
@@ -58,18 +48,18 @@ export function NightOwlScene({ analysis }: { analysis: DeveloperProfile }) {
                 )}
             </button>
 
-            {/* Dynamic Parallax Starry Background */}
-            <NightBackground mouseX={mouseX} mouseY={mouseY} />
+            {/* River and construction background */}
+            <RiverBackground />
 
-            {/* Tree Perch Layer */}
-            <div className="fixed bottom-0 right-0 md:right-10 z-10 pointer-events-auto">
-                <TreePerch />
-            </div>
+            {/* Wooden construction and dam */}
+            <WoodConstruction />
 
-            {/* Floating Creature Layer */}
-            {/* The Owl is now positioned so its default state is 'perched' on the tree */}
-            <div className="fixed bottom-[180px] right-[100px] md:bottom-[230px] md:right-[150px] z-20 pointer-events-auto">
-                <OwlCreature />
+            {/* Floating blueprint diagrams */}
+            <FloatingBlueprints />
+
+            {/* Beaver Character - positioned on the right side of construction */}
+            <div className="fixed bottom-48 right-10 md:right-80 z-20 pointer-events-auto">
+                <BeaverCreature />
             </div>
 
             {/* Cinematic Entrance for the Notebook Report Overlay */}
@@ -77,7 +67,6 @@ export function NightOwlScene({ analysis }: { analysis: DeveloperProfile }) {
                 initial={{ y: 200, rotate: -2, opacity: 0 }}
                 animate={{ y: 0, rotate: 0, opacity: 1 }}
                 transition={{ delay: 2.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                // Reduced top padding dramatically (from pt-64/32) to shift notebook higher, giving owl more breathing space
                 className="relative z-40 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
             >
                 <div className="pointer-events-auto">

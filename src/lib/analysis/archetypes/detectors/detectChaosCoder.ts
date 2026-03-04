@@ -8,7 +8,7 @@ export function detectChaosBuilder(repos: GithubRepo[]): Archetype {
     const languageMap = countLanguages(repos);
     const languageDiversity = Object.keys(languageMap).length;
     const reposPerYearMap = reposPerYear(repos);
-    
+
     // Count how many repos were created recently (high creation rate = chaos)
     const currentYear = new Date().getFullYear();
     const recentRepos = reposPerYearMap[currentYear] || 0;
@@ -24,12 +24,12 @@ export function detectChaosBuilder(repos: GithubRepo[]): Archetype {
         score += 1;
         evidence.push(`${repoCount} repositories showing active development`);
     }
-    
+
     if (recentRepos > 5) {
         score += 2;
         evidence.push(`${recentRepos} new repositories created this year - rapid prototyping`);
     }
-    
+
     if (languageDiversity > 5) {
         score += 2;
         evidence.push(`${languageDiversity} distinct languages - experimental approach`);

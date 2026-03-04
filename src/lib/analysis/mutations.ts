@@ -35,7 +35,7 @@ export function detectConsoleLogAddict(
     // This would check commit messages or repo content for high console.log usage
     // Mock implementation for now
     const hasHighDebugActivity = Math.random() > 0.7; // Simulated
-    
+
     if (hasHighDebugActivity) {
         return {
             name: "☢ Console.log Addict",
@@ -51,7 +51,7 @@ export function detectStackOverflowSummoner(
 ): Mutation | null {
     // Mock implementation - would check for StackOverflow-style patterns
     const hasStackOverflowPattern = Math.random() > 0.75;
-    
+
     if (hasStackOverflowPattern) {
         return {
             name: "☢ StackOverflow Summoner",
@@ -67,7 +67,7 @@ export function detectInfiniteRefactorer(
 ): Mutation | null {
     // Would check for frequent refactoring commits
     const hasRefactoringPattern = Math.random() > 0.8;
-    
+
     if (hasRefactoringPattern) {
         return {
             name: "☢ Infinite Refactorer",
@@ -83,7 +83,7 @@ export function detectDependencyExplosion(
 ): Mutation | null {
     // Would check for rapid dependency additions
     const hasDependencyPattern = Math.random() > 0.75;
-    
+
     if (hasDependencyPattern) {
         return {
             name: "☢ Dependency Explosion",
