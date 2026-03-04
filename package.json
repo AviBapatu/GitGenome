@@ -13,10 +13,14 @@
     "axios": "^1.13.6",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.5",
+    "howler": "^2.2.4",
+    "lottie-react": "^2.4.1",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-rough-notation": "^1.0.8",
     "recharts": "^3.7.0",
+    "roughjs": "^4.6.6",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
