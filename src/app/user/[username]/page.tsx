@@ -128,7 +128,7 @@ export default function UserPage() {
 
             <AnimatePresence mode="wait">
                 {showScene && finalAnalysis ? (
-                    <GenomeExperience key="scene" analysis={finalAnalysis} />
+                    <GenomeExperience key="scene" analysis={finalAnalysis} user={user} repos={repos} username={username} />
                 ) : (
                     <motion.main
                         key="loader"

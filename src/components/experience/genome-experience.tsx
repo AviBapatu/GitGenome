@@ -1,13 +1,22 @@
 "use client";
 
 import { DeveloperProfile } from "@/types/analysis";
+import { NormalizedUser } from "@/lib/github/githubNormalizer";
+import { GithubRepo } from "@/types/github";
 import { sceneMap } from "@/components/scenes/scene-map";
 import { MuteToggle } from "@/components/sound/mute-toggle";
 import { ArchetypeReveal } from "@/components/experience/archetype-reveal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export function GenomeExperience({ analysis }: { analysis: DeveloperProfile }) {
+interface GenomeExperienceProps {
+    analysis: DeveloperProfile;
+    user?: NormalizedUser;
+    repos?: GithubRepo[];
+    username: string;
+}
+
+export function GenomeExperience({ analysis, user, repos, username }: GenomeExperienceProps) {
     const [revealComplete, setRevealComplete] = useState(false);
 
     const archetypeId = analysis.archetype.id;
@@ -15,7 +24,7 @@ export function GenomeExperience({ analysis }: { analysis: DeveloperProfile }) {
     // Scene orchestrator
     const renderScene = () => {
         const Scene = sceneMap[archetypeId] || sceneMap["night_owl"];
-        return <Scene analysis={analysis} />;
+        return <Scene analysis={analysis} user={user} repos={repos} username={username} />;
     };
 
     return (

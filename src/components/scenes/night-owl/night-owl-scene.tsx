@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DeveloperProfile } from "@/types/analysis";
 import { motion, useMotionValue } from "framer-motion";
 import { soundManager } from "@/components/sound/sound-manager";
 import { OwlCreature } from "@/components/creatures/owl";
 import { NotebookLayout } from "@/components/ui/notebook-layout";
 import { NightBackground } from "./night-background";
 import { TreePerch } from "./tree-perch";
+import type { SceneProps } from "@/components/scenes/scene-map";
 
-export function NightOwlScene({ analysis }: { analysis: DeveloperProfile }) {
+export function NightOwlScene({ analysis, user, repos, username }: SceneProps) {
     // Parallax motion tracking
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -81,7 +81,7 @@ export function NightOwlScene({ analysis }: { analysis: DeveloperProfile }) {
                 className="relative z-40 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
             >
                 <div className="pointer-events-auto">
-                    <NotebookLayout analysis={analysis} />
+                    <NotebookLayout analysis={analysis} user={user} repos={repos} username={username} />
                 </div>
             </motion.div>
         </div>

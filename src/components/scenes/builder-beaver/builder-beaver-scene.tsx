@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DeveloperProfile } from "@/types/analysis";
 import { motion } from "framer-motion";
 import { soundManager } from "@/components/sound/sound-manager";
 import { BeaverCreature } from "@/components/creatures/beaver";
@@ -9,8 +8,9 @@ import { NotebookLayout } from "@/components/ui/notebook-layout";
 import { RiverBackground } from "./river-background";
 import { WoodConstruction } from "./wood-construction";
 import { FloatingBlueprints } from "./floating-blueprints";
+import type { SceneProps } from "@/components/scenes/scene-map";
 
-export function BuilderBeaverScene({ analysis }: { analysis: DeveloperProfile }) {
+export function BuilderBeaverScene({ analysis, user, repos, username }: SceneProps) {
     const [isMuted, setIsMuted] = useState(false);
 
     // Load background ambient noises
@@ -70,7 +70,7 @@ export function BuilderBeaverScene({ analysis }: { analysis: DeveloperProfile })
                 className="relative z-40 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
             >
                 <div className="pointer-events-auto">
-                    <NotebookLayout analysis={analysis} />
+                    <NotebookLayout analysis={analysis} user={user} repos={repos} username={username} />
                 </div>
             </motion.div>
         </div>

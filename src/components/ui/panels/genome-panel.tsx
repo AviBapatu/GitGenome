@@ -58,7 +58,7 @@ function GenomeBar({ label, value, color, delay }: GenomeBarProps) {
 
 export function GenomePanel({ analysis }: { analysis: DeveloperProfile }) {
     const { genome } = analysis;
-    
+
     const dimensions = [
         { label: "Exploration", value: genome.exploration, color: "bg-gradient-to-r from-amber-400 to-orange-500" },
         { label: "Experimentation", value: genome.experimentation, color: "bg-gradient-to-r from-pink-400 to-rose-500" },
@@ -164,8 +164,8 @@ interface BalanceProps {
 
 function BalanceVisualization({ genome }: BalanceProps) {
     const avg = (genome.exploration + genome.discipline + genome.experimentation + genome.consistency) / 4;
-    
-    const profile = 
+
+    const profile =
         genome.exploration > 70 && genome.experimentation > 70 ? "Innovator" :
         genome.discipline > 70 && genome.consistency > 70 ? "Strategist" :
         genome.exploration > 60 && genome.discipline > 60 ? "Versatile" :

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { DeveloperProfile } from "@/types/analysis";
 import { soundManager } from "@/components/sound/sound-manager";
 import { NotebookLayout } from "@/components/ui/notebook-layout";
 import { GlitchBackground } from "./glitch-background";
@@ -10,8 +9,9 @@ import { GremlinCreature } from "@/components/creatures/gremlin";
 import { ErrorParticles } from "./error-particles";
 import { ChaosDesk } from "./chaos-desk";
 import { GlitchEffects } from "./glitch-effects";
+import type { SceneProps } from "@/components/scenes/scene-map";
 
-export function ChaosBuilderScene({ analysis }: { analysis: DeveloperProfile }) {
+export function ChaosBuilderScene({ analysis, user, repos, username }: SceneProps) {
     const [mouseNorm, setMouseNorm] = useState({ x: 0.5, y: 0.5 });
     const [isMuted, setIsMuted] = useState(false);
     const gremlinWrapperRef = useRef<HTMLDivElement>(null);
@@ -130,7 +130,7 @@ export function ChaosBuilderScene({ analysis }: { analysis: DeveloperProfile }) 
                 className="relative z-40 pt-16 px-4 pb-20 pointer-events-none md:w-3/5"
             >
                 <div className="pointer-events-auto">
-                    <NotebookLayout analysis={analysis} />
+                    <NotebookLayout analysis={analysis} user={user} repos={repos} username={username} />
                 </div>
             </motion.div>
 

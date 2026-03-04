@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-export type BookmarkTab = "summary" | "genome" | "evidence" | "mutations";
+export type BookmarkTab = "profile" | "summary" | "genome" | "evidence" | "mutations";
 
 export interface BookmarkConfig {
   id: BookmarkTab;
@@ -14,6 +14,14 @@ export interface BookmarkConfig {
 }
 
 const BOOKMARKS: BookmarkConfig[] = [
+  {
+    id: "profile",
+    label: "Profile",
+    emoji: "📋",
+    color: "from-violet-100 to-violet-50",
+    bgColor: "bg-violet-100",
+    textColor: "text-violet-900"
+  },
   {
     id: "summary",
     label: "Summary",
@@ -93,12 +101,11 @@ export function NotebookBookmarks({ activeTab, onTabChange }: NotebookBookmarksP
               <div
                 className="relative z-10 flex flex-col items-center gap-1"
                 style={{
-                  transform: `rotate(${
-                    bookmark.id === "genome" ? "-2deg" :
-                    bookmark.id === "evidence" ? "1deg" :
-                    bookmark.id === "mutations" ? "-1deg" :
-                    "0deg"
-                  })`
+                  transform: `rotate(${bookmark.id === "genome" ? "-2deg" :
+                      bookmark.id === "evidence" ? "1deg" :
+                        bookmark.id === "mutations" ? "-1deg" :
+                          "0deg"
+                    })`
                 }}
               >
                 <span className="text-lg md:text-xl">{bookmark.emoji}</span>
