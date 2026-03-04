@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# GitGenome
+
+> **Mapping the DNA of Developers**
+
+GitGenome is an interactive web app that analyzes GitHub user profiles to reveal their unique "developer genome" and classify them into playful archetypes. By examining public repositories, commit patterns, and coding behaviors, GitGenome visualizes your coding style and development journey as a living, animated experience.
+
+## Features
+
+- **GitHub Profile Analysis**: Enter any GitHub username to analyze their public repositories and activity.
+- **Developer Genome**: Quantifies four core behavioral axes—Exploration, Discipline, Experimentation, Consistency.
+- **Archetype Detection**: Classifies developers into one of four archetypes:
+	- **Night Owl**: Steady late-night coder
+	- **Framework Collector**: Explorer of new tools and frameworks
+	- **Chaos Builder**: Rapid experimenter, thrives in creative chaos
+	- **Builder Beaver**: Disciplined, long-term project maintainer
+- **Visual Scenes & Creatures**: Each archetype is brought to life with custom animated scenes and mascot creatures.
+- **Mutation & Trait Detection**: Highlights unique coding habits and patterns (e.g., "Console.log Addict").
+- **Shareable Reports**: Generate a fun, shareable summary of your developer genome.
+
+## How It Works
+
+1. **Data Collection**: Fetches public GitHub user and repo data via the GitHub API.
+2. **Normalization**: Cleans and standardizes repository data for analysis.
+3. **Metrics Extraction**: Calculates stats like repo count, language diversity, commit frequency, and more.
+4. **Genome Calculation**: Maps metrics to four axes: Exploration, Discipline, Experimentation, Consistency.
+5. **Archetype Detection**: Runs detectors to classify the user into an archetype based on their genome and activity.
+6. **Traits & Mutations**: Identifies notable coding behaviors and habits.
+7. **Visualization**: Presents results as interactive scenes and panels.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js (v18+ recommended)
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/yourusername/gitgenome.git
+cd gitgenome
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+### Running the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# or yarn dev / pnpm dev / bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Developer Archetypes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Archetype            | Description                                                      |
+|----------------------|------------------------------------------------------------------|
+| Night Owl            | Steady, consistent coder, often active late at night             |
+| Framework Collector  | Loves exploring new frameworks, high repo and language diversity  |
+| Chaos Builder        | Rapid experimenter, thrives in creative chaos                    |
+| Builder Beaver       | Disciplined, builds and maintains substantial long-term projects  |
 
-## Learn More
+### Genome Axes
 
-To learn more about Next.js, take a look at the following resources:
+- **Exploration**: How much you try new technologies
+- **Discipline**: Project longevity and follow-through
+- **Experimentation**: Frequency of new ideas and repos
+- **Consistency**: Regularity and steadiness of contributions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions are welcome! Please open issues or pull requests for improvements, bug fixes, or new features.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT License. See [LICENSE](LICENSE) for details.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Credits
+
+- Built with [Next.js](https://nextjs.org), [React](https://react.dev), and [Framer Motion](https://www.framer.com/motion/)
+- GitHub API for data
+- Fonts: Geist, Patrick Hand, Caveat
+
+---
+
+_What’s your GitGenome?_ 🧬
