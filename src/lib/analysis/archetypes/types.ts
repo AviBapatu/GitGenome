@@ -6,3 +6,9 @@ export interface Archetype {
     description: string;
     evidence: string[];
 }
+
+export interface ArchetypeScore {
+    archetype: Archetype;
+    topScore: number;
+    secondScore: number;
+}

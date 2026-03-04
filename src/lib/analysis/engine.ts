@@ -1,59 +1,96 @@
 import { GithubRepo } from "@/types/github";
 import { DeveloperProfile, Trait, Mutation } from "@/types/analysis";
 
-import { countLanguages, dominantLanguage, inactiveRepoRatio } from "./metrics";
-import { detectSerialStarter, detectTypeScriptFanatic, detectRapidExperimenter, detectBreakFixCycle, detectMultiLanguageBouncer } from "./traits";
-import { detectAbandonedProjects, detectFrameworkCollector, detectConsoleLogAddict, detectStackOverflowSummoner, detectInfiniteRefactorer, detectDependencyExplosion } from "./mutations";
+import { extractMetrics } from "./metricsEngine";
+import { calculateGenome, calculateConfidence } from "./genomeEngine";
 import { detectArchetype } from "./archetypes/engine";
+import {
+  detectSerialStarter,
+  detectTypeScriptFanatic,
+  detectRapidExperimenter,
+  detectBreakFixCycle,
+  detectMultiLanguageBouncer,
+} from "./traits";
+import {
+  detectAbandonedProjects,
+  detectConsoleLogAddict,
+  detectStackOverflowSummoner,
+  detectInfiniteRefactorer,
+  detectDependencyExplosion,
+} from "./mutations";
 
+/**
+ * Main analysis engine
+ * Orchestrates the complete pipeline:
+ * GitHub API Data → Normalization → Metrics → Genome → Archetype → Traits/Mutations → Output
+ */
 export function analyzeDeveloper(repos: GithubRepo[]): DeveloperProfile {
-    const languageMap = countLanguages(repos);
-    const dominant = dominantLanguage(languageMap);
-    const inactiveRatio = inactiveRepoRatio(repos);
+  // Step 1: Extract comprehensive metrics from repos
+  const metrics = extractMetrics(repos);
 
-    const archetype = detectArchetype(repos);
+  // Step 2: Calculate behavioral genome
+  const genome = calculateGenome(metrics);
 
-    // Build traits based on archetype
-    let traits: Trait[] = [
-        detectSerialStarter(repos),
-        detectTypeScriptFanatic(languageMap),
-    ];
+  // Step 3: Detect archetype using metrics + genome
+  const archetypeScore = detectArchetype(metrics, genome);
+  const archetype = archetypeScore.archetype;
 
-    // Add Chaos Builder specific traits
-    if (archetype.id === "chaos_builder") {
-        traits = traits.concat([
-            detectRapidExperimenter(repos),
-            detectBreakFixCycle(repos),
-            detectMultiLanguageBouncer(languageMap),
-        ]);
-    }
+  // Step 4: Calculate confidence in classification
+  const confidence = calculateConfidence(
+    archetypeScore.topScore,
+    archetypeScore.secondScore
+  );
 
-    traits = traits.filter(Boolean) as Trait[];
+  // Step 5: Build traits based on metrics and archetype
+  const traitDetectors: Array<() => Trait | null> = [
+    () => detectSerialStarter(repos, metrics),
+    () => detectTypeScriptFanatic(metrics),
+  ];
 
-    // Build mutations based on archetype
-    let mutations: Mutation[] = [
-        detectAbandonedProjects(inactiveRatio),
-        detectFrameworkCollector(languageMap),
-    ];
+  if (archetype.id === "chaos_builder") {
+    traitDetectors.push(
+      () => detectRapidExperimenter(metrics),
+      () => detectBreakFixCycle(metrics),
+      () => detectMultiLanguageBouncer(metrics)
+    );
+  }
 
-    // Add Chaos Builder specific mutations
-    if (archetype.id === "chaos_builder") {
-        mutations = mutations.concat([
-            detectConsoleLogAddict(repos),
-            detectStackOverflowSummoner(repos),
-            detectInfiniteRefactorer(repos),
-            detectDependencyExplosion(repos),
-        ]);
-    }
+  const traits = traitDetectors
+    .map((fn) => fn())
+    .filter((trait): trait is Trait => trait !== null);
 
-    mutations = mutations.filter(Boolean) as Mutation[];
+  // Step 6: Build mutations based on archetype
+  const mutationDetectors: Array<() => Mutation | null> = [
+    () => detectAbandonedProjects(metrics),
+  ];
 
-    return {
-        archetype,
-        confidence: 0.7,
-        dominantLanguage: dominant,
-        traits,
-        mutations,
-    };
+  if (archetype.id === "chaos_builder") {
+    mutationDetectors.push(
+      () => detectConsoleLogAddict(repos),
+      () => detectStackOverflowSummoner(repos),
+      () => detectInfiniteRefactorer(repos),
+      () => detectDependencyExplosion(repos)
+    );
+  }
+
+  const mutations = mutationDetectors
+    .map((fn) => fn())
+    .filter((mutation): mutation is Mutation => mutation !== null);
+
+  // Step 7: Combine all evidence
+  const combinedEvidence = [
+    ...archetype.evidence,
+    ...traits.map((t) => t.explanation),
+  ];
+
+  return {
+    archetype,
+    genome,
+    confidence,
+    dominantLanguage: metrics.dominantLanguage,
+    traits,
+    mutations,
+    evidence: combinedEvidence,
+  };
 }
 

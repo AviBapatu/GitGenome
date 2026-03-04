@@ -24,10 +24,17 @@ function buildOverrideProfile(archetypeId: string): DeveloperProfile {
             description: `[Dev Override] ${cfg?.environment ?? archetypeId}`,
             evidence: ["Forced via ?archetype= query param"],
         },
-        confidence: 1,
+        genome: {
+            exploration: 50,
+            discipline: 50,
+            experimentation: 50,
+            consistency: 50,
+        },
+        confidence: 100,
         dominantLanguage: null,
         traits: [],
         mutations: [],
+        evidence: ["Forced via ?archetype= query param"],
     };
 }
 

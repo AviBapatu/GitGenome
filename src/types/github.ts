@@ -16,4 +16,20 @@ export interface GithubRepo {
     size: number;
     created_at: string;
     updated_at: string;
+    description?: string | null;
+    topics?: string[];
+}
+
+/**
+ * Normalized repo data for analysis
+ * The analysis engine works with normalized data to keep logic clean
+ */
+export interface NormalizedRepo {
+    name: string;
+    language: string | null;
+    size: number;
+    createdAt: Date;
+    updatedAt: Date;
+    description?: string;
+    topics?: string[];
 }
