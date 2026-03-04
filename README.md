@@ -79,16 +79,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 Contributions are welcome! Please open issues or pull requests for improvements, bug fixes, or new features.
 
-## License
-
-MIT License. See [LICENSE](LICENSE) for details.
 
 ## Credits
 
 - Built with [Next.js](https://nextjs.org), [React](https://react.dev), and [Framer Motion](https://www.framer.com/motion/)
 - GitHub API for data
-- Fonts: Geist, Patrick Hand, Caveat
+- Fonts: Geist, Patrick Hand, Caveat.
 
 ---
 
-_What’s your GitGenome?_ 🧬
+_What’s your GitGenome?_ .
