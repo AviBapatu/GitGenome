@@ -9,6 +9,7 @@ import { GenomeExperience } from "@/components/experience/genome-experience";
 import { analyzeDeveloper } from "@/lib/analysis/engine";
 import { motion, AnimatePresence } from "framer-motion";
 import { DevSwitcher } from "@/components/ui/dev-switcher";
+import { DebugInspector } from "@/components/ui/debug-inspector";
 import { sceneConfig } from "@/lib/scene-config";
 import { DeveloperProfile } from "@/types/analysis";
 
@@ -51,7 +52,7 @@ export default function UserPage() {
     );
     const { data: repos, isLoading: repoLoading, error: repoError } = useGithubRepos(
         username,
-        { limit: 50, topOnly: false }
+        { limit: 500, topOnly: false }
     );
 
     const steps = [
@@ -126,6 +127,7 @@ export default function UserPage() {
         <>
             {/* DevSwitcher always on top — persists across loading and scene states */}
             <DevSwitcher />
+            <DebugInspector repos={repos || null} profile={finalAnalysis || null} />
 
             <AnimatePresence mode="wait">
                 {showScene && finalAnalysis ? (

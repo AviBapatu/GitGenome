@@ -17,11 +17,11 @@ export interface DeveloperGenome {
  * Signals: language diversity, repo count, framework variety
  */
 function calculateExploration(metrics: AnalysisMetrics): number {
-  const repoCountNormalized = Math.min(metrics.repoCount / 100, 1);
+  const repoCountNormalized = Math.min(metrics.repoCount / 150, 1);
   const languageCountNormalized = Math.min(metrics.languageCount / 10, 1);
 
   const exploration = (repoCountNormalized * 50) + (languageCountNormalized * 50);
-  return Math.round(exploration);
+  return Math.max(0, Math.min(100, Math.round(exploration)));
 }
 
 /**
@@ -30,10 +30,10 @@ function calculateExploration(metrics: AnalysisMetrics): number {
  */
 function calculateDiscipline(metrics: AnalysisMetrics): number {
   const avgRepoSizeNormalized = Math.min(metrics.avgRepoSize / 10000, 1);
-  const projectLongevityNormalized = Math.min(metrics.avgProjectLongevity / 1095, 1); // 3 years = 1095 days
+  const projectLongevityNormalized = Math.min(metrics.avgProjectLongevity / (365 * 3), 1); // 3 years
 
-  const discipline = (avgRepoSizeNormalized * 40) + (projectLongevityNormalized * 30) + (metrics.activityConcentration * 30);
-  return Math.round(discipline);
+  const discipline = (avgRepoSizeNormalized * 50) + (projectLongevityNormalized * 40) + (metrics.activityConcentration * 10);
+  return Math.max(0, Math.min(100, Math.round(discipline)));
 }
 
 /**
@@ -41,8 +41,11 @@ function calculateDiscipline(metrics: AnalysisMetrics): number {
  * Signals: many small repos, rapid creation, technology variety
  */
 function calculateExperimentation(metrics: AnalysisMetrics): number {
-  const experimentation = (metrics.smallRepoRatio * 60) + (metrics.abandonedRepoRatio * 40);
-  return Math.round(experimentation);
+  const creationRateNormalized = Math.min(metrics.repoCreationRate / 15, 1);
+  const languageDiversityPercent = Math.min(metrics.languageDiversity, 1);
+
+  const experimentation = (metrics.smallRepoRatio * 50) + (languageDiversityPercent * 30) + (creationRateNormalized * 20);
+  return Math.max(0, Math.min(100, Math.round(experimentation)));
 }
 
 /**
@@ -51,9 +54,8 @@ function calculateExperimentation(metrics: AnalysisMetrics): number {
  */
 function calculateConsistency(metrics: AnalysisMetrics): number {
   const commitFrequencyNormalized = Math.min(metrics.commitFrequency / 60, 1);
-
   const consistency = commitFrequencyNormalized * 100;
-  return Math.round(consistency);
+  return Math.max(0, Math.min(100, Math.round(consistency)));
 }
 
 /**
@@ -76,9 +78,10 @@ export function calculateConfidence(
   topScore: number,
   secondScore: number
 ): number {
+  if (topScore === 0) return 0;
   // Confidence based on score gap
-  const difference = topScore - secondScore;
-  return Math.max(0, difference); // Representing the percentage
+  const difference = (topScore - secondScore) / topScore;
+  return Math.max(0, Math.min(1, difference)); // Representing the percentage
 }
 
 /**

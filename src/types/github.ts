@@ -22,6 +22,7 @@ export interface GithubRepo {
     topics?: string[];
     fork?: boolean;
     archived?: boolean;
+    is_template?: boolean;
     owner?: {
         login: string;
     };

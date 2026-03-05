@@ -38,7 +38,7 @@ export interface AnalysisMetrics {
 
   // Time-based patterns
   nightCommitRatio: number; // estimated - commits between 22:00 and 05:00
-  creationFrequency: number; // repos created per year
+  repoCreationRate: number; // repos created per year
 
   // Activity concentration
   activityConcentration: number; // top 3 repo commits / total commits
@@ -190,7 +190,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
 
   // Creation frequency (repos per year)
   const accountAgeYears = accountAgeMonths / 12;
-  const creationFrequency =
+  const repoCreationRate =
     accountAgeYears > 0 ? repoCount / accountAgeYears : 0;
 
   // Star metrics
@@ -238,7 +238,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
     commitFrequency,
     commitConsistency,
     nightCommitRatio,
-    creationFrequency,
+    repoCreationRate,
     minStars,
     maxStars,
     avgStars,

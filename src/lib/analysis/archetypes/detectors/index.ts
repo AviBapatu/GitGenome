@@ -22,8 +22,12 @@ export function detectNightOwl(
   let score = 0;
   const evidence: string[] = [];
 
-  if (metrics.nightCommitRatio > 0.35) {
-    score = metrics.nightCommitRatio * 100;
+  if (metrics.commitFrequency > 10) {
+    if (metrics.nightCommitRatio > 0.40) {
+      score = 150; // Guaranteed to be the top archetype
+    } else if (metrics.nightCommitRatio > 0.35) {
+      score = metrics.nightCommitRatio * 100;
+    }
   }
 
   if (score > 0) {
@@ -64,16 +68,16 @@ export function detectFrameworkCollector(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  const score = (genome.exploration * 0.4) + (genome.experimentation * 0.4) + ((1 - metrics.activityConcentration) * 20);
+  const score = (genome.exploration * 0.45) + (genome.experimentation * 0.40) + ((1 - metrics.activityConcentration) * 15);
   const evidence: string[] = [];
 
   evidence.push(`${metrics.repoCount} repositories analyzed`);
   evidence.push(`${metrics.languageCount} programming languages detected`);
   if (metrics.smallRepoRatio > 0) {
-    evidence.push(`${Math.round(metrics.smallRepoRatio * 100)}% of projects are small experiments`);
+    evidence.push(`${Math.round(metrics.smallRepoRatio * 100)}% of repositories are experimental projects`);
   }
   if (metrics.activityConcentration < 0.5) {
-    evidence.push(`Development activity is spread across many repositories (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
+    evidence.push(`Most activity spread across many repositories (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
   } else {
     evidence.push(`Most activity concentrated in top repositories (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
   }
@@ -107,16 +111,16 @@ export function detectChaosBuilder(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  const score = (genome.experimentation * 0.5) + ((100 - genome.consistency) * 0.3) + ((1 - metrics.activityConcentration) * 20);
+  const score = (genome.experimentation * 0.50) + (genome.exploration * 0.30) + ((100 - genome.consistency) * 0.20);
   const evidence: string[] = [];
 
-  evidence.push(`${metrics.repoCount} repositories - high experimentation rate`);
+  evidence.push(`${metrics.repoCount} repositories analyzed with high experimentation rate`);
 
   if (metrics.abandonedRepoRatio > 0) {
-    evidence.push(`${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are unfinished or abandoned`);
+    evidence.push(`${Math.round(metrics.abandonedRepoRatio * 100)}% of repositories are experimental projects`);
   }
 
-  evidence.push(`Activity consistency is low, indicating frequent context switching`);
+  evidence.push(`Activity consistency is low (${Math.round(genome.consistency)}%), indicating frequent context switching`);
   evidence.push(`Development spread across projects (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
 
   return {
@@ -148,18 +152,17 @@ export function detectBuilderBeaver(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  const score = (genome.discipline * 0.5) + (genome.consistency * 0.3) + (metrics.activityConcentration * 20);
+  const score = (genome.discipline * 0.50) + (genome.consistency * 0.35) + (metrics.activityConcentration * 15);
   const evidence: string[] = [];
 
-  evidence.push(`${metrics.repoCount} carefully crafted repositories`);
+  evidence.push(`${metrics.repoCount} carefully crafted repositories analyzed`);
 
   if (metrics.avgRepoSize > 0) {
     evidence.push(`Repositories are substantial (avg ${Math.round(metrics.avgRepoSize / 1000)}MB)`);
   }
 
-  evidence.push(`Only ${Math.round(metrics.abandonedRepoRatio * 100)}% of projects are inactive`);
-  evidence.push(`Consistent commit patterns suggest structured development methodology`);
-  evidence.push(`Highly focused effort (Activity Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
+  evidence.push(`Commit consistency is high (${Math.round(genome.consistency)}%), indicating steady contribution`);
+  evidence.push(`Most activity concentrated in top repositories (Concentration: ${Math.round(metrics.activityConcentration * 100)}%)`);
 
   return {
     id: "builder_beaver",
