@@ -24,8 +24,6 @@ export function detectNightOwl(
 
   if (metrics.commitFrequency > 10) {
     if (metrics.nightCommitRatio > 0.40) {
-      score = 150; // Guaranteed to be the top archetype
-    } else if (metrics.nightCommitRatio > 0.35) {
       score = metrics.nightCommitRatio * 100;
     }
   }
@@ -68,7 +66,7 @@ export function detectFrameworkCollector(
   metrics: AnalysisMetrics,
   genome: DeveloperGenome
 ): Archetype {
-  const score = (genome.exploration * 0.45) + (genome.experimentation * 0.40) + ((1 - metrics.activityConcentration) * 15);
+  const score = (genome.exploration * 0.45) + (genome.experimentation * 0.40) + ((100 - genome.discipline) * 0.15);
   const evidence: string[] = [];
 
   evidence.push(`${metrics.repoCount} repositories analyzed`);

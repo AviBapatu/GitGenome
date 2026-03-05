@@ -42,6 +42,7 @@ export interface AnalysisMetrics {
 
   // Activity concentration
   activityConcentration: number; // top 3 repo commits / total commits
+  activeRepoRatio: number;
 
   // Repository health
   minStars: number;
@@ -81,7 +82,9 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   // Basic counts
   const repoCount = repos.length;
   const totalSize = repos.reduce((sum, r) => sum + r.size, 0);
-  const avgRepoSize = repoCount > 0 ? totalSize / repoCount : 0;
+  const reposForSize = repos.filter(r => r.size >= 20);
+  const totalSizeForAvg = reposForSize.reduce((sum, r) => sum + r.size, 0);
+  const avgRepoSize = reposForSize.length > 0 ? totalSizeForAvg / reposForSize.length : 0;
 
   // Language distribution
   const languageDistribution: Record<string, number> = {};
@@ -93,21 +96,19 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   });
 
   const languageCount = Object.keys(languageDistribution).length;
-  const languageDiversity = repoCount > 0 ? languageCount / repoCount : 0;
+  const languageDiversity = Math.min(languageCount / 10, 1);
 
   const dominantLanguage = getDominantLanguage(languageDistribution);
 
   // Repository size distribution
   const smallRepos = repos.filter(
-    (r) => r.size < ANALYSIS_CONFIG.smallRepoThreshold
+    (r) => r.size < 200
   ).length;
   const mediumRepos = repos.filter(
-    (r) =>
-      r.size >= ANALYSIS_CONFIG.smallRepoThreshold &&
-      r.size < ANALYSIS_CONFIG.largeRepoThreshold
+    (r) => r.size >= 200 && r.size <= 2000
   ).length;
   const largeRepos = repos.filter(
-    (r) => r.size >= ANALYSIS_CONFIG.largeRepoThreshold
+    (r) => r.size > 2000
   ).length;
 
   const smallRepoRatio = repoCount > 0 ? smallRepos / repoCount : 0;
@@ -128,7 +129,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   const longevities = repos.map((repo) => {
     const created = new Date(repo.created_at).getTime();
     const updated = new Date(repo.updated_at).getTime();
-    return (updated - created) / (24 * 60 * 60 * 1000); // days
+    return (updated - created) / (365 * 24 * 60 * 60 * 1000); // years
   });
   const avgProjectLongevity =
     longevities.length > 0
@@ -144,10 +145,13 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
     Math.max(...repos.map((r) => new Date(r.updated_at).getTime()), now.getTime())
   );
 
+  // Deep analysis repos for specific metrics
+  const deepRepos = repos.slice(0, 30);
+
   // Commit frequency estimation
   // Use actual commit counts if available, otherwise estimate
   let totalCommits = 0;
-  const actualCommitsSum = repos.reduce((sum, r) => sum + (r.commitCount || 0), 0);
+  const actualCommitsSum = deepRepos.reduce((sum, r) => sum + (r.commitCount || 0), 0);
 
   if (actualCommitsSum > 0) {
     totalCommits = actualCommitsSum;
@@ -157,7 +161,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   }
 
   // Calculate activity concentration (top 3 repos / total commits)
-  const sortedByCommitCount = [...repos]
+  const sortedByCommitCount = [...deepRepos]
     .filter(r => r.commitCount !== undefined)
     .sort((a, b) => (b.commitCount || 0) - (a.commitCount || 0));
 
@@ -177,7 +181,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
       : now;
 
   const accountAgeMonths =
-    (now.getTime() - firstRepoDate.getTime()) / (30.44 * 24 * 60 * 60 * 1000);
+    (now.getTime() - firstRepoDate.getTime()) / (30 * 24 * 60 * 60 * 1000);
   const commitFrequency = accountAgeMonths > 0 ? totalCommits / accountAgeMonths : 0;
 
   const avgCommitsPerRepo = repoCount > 0 ? totalCommits / repoCount : 0;
@@ -185,13 +189,19 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
   // Commit consistency (how evenly distributed)
   const commitConsistency = calculateCommitConsistency(avgCommitsPerRepo);
 
-  // Night commit ratio estimation
-  const nightCommitRatio = estimateNightCommitRatio(repos);
+  // Night commit ratio estimation using deep dataset
+  const nightCommitRatio = estimateNightCommitRatio(deepRepos);
 
   // Creation frequency (repos per year)
   const accountAgeYears = accountAgeMonths / 12;
   const repoCreationRate =
     accountAgeYears > 0 ? repoCount / accountAgeYears : 0;
+
+  // Active repo ratio
+  const reposUpdatedLastYear = repos.filter(
+    (repo) => now.getTime() - new Date(repo.updated_at).getTime() <= 365 * 24 * 60 * 60 * 1000
+  ).length;
+  const activeRepoRatio = repoCount > 0 ? reposUpdatedLastYear / repoCount : 0;
 
   // Star metrics
   const stars = repos.map((r) => r.stargazers_count);
@@ -246,6 +256,7 @@ export function extractMetrics(repos: GithubRepo[]): AnalysisMetrics {
     frameworkKeywords,
     topicDistribution,
     activityConcentration,
+    activeRepoRatio,
   };
 }
 
