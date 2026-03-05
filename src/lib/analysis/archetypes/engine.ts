@@ -52,9 +52,9 @@ export function detectArchetype(
   let winner = sorted[0];
   let runnerUp = sorted[1];
 
-  // Night Owl override logic: if > 0.45 it overrides other archetypes
+  // Night Owl override logic: if > 0.40 it overrides other archetypes
   const nightOwl = archetypes.find((a) => a.id === "night_owl");
-  if (nightOwl && metrics.nightCommitRatio > 0.45 && winner.id !== "night_owl") {
+  if (nightOwl && metrics.nightCommitRatio > 0.40 && winner.id !== "night_owl") {
     runnerUp = winner;
     winner = nightOwl;
   }

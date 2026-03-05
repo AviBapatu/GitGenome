@@ -17,11 +17,11 @@ export interface DeveloperGenome {
  * Signals: language diversity, repo count, framework variety
  */
 function calculateExploration(metrics: AnalysisMetrics): number {
-  const repoCountNormalized = Math.min(metrics.repoCount / 100, 1);
-  const languageCountNormalized = Math.min(metrics.languageCount / 10, 1);
+  const languageDiversity = metrics.languageDiversity; // Already 0-1
+  const creationScore = Math.min(Math.log(metrics.repoCreationRate + 1) / Math.log(40), 1);
 
-  const exploration = (repoCountNormalized * 50) + (languageCountNormalized * 50);
-  return Math.round(exploration);
+  const exploration = (languageDiversity * 60) + (creationScore * 40);
+  return Math.max(0, Math.min(100, Math.round(exploration)));
 }
 
 /**
@@ -29,11 +29,11 @@ function calculateExploration(metrics: AnalysisMetrics): number {
  * Signals: large repos, long project lifespan, low abandonment
  */
 function calculateDiscipline(metrics: AnalysisMetrics): number {
-  const avgRepoSizeNormalized = Math.min(metrics.avgRepoSize / 10000, 1);
-  const projectLongevityNormalized = Math.min(metrics.avgProjectLongevity / 1095, 1); // 3 years = 1095 days
+  const sizeScore = Math.min(metrics.avgRepoSize / 5000, 1);
+  const longevityScore = Math.min(metrics.avgProjectLongevity / 5, 1);
 
-  const discipline = (avgRepoSizeNormalized * 40) + (projectLongevityNormalized * 30) + (metrics.activityConcentration * 30);
-  return Math.round(discipline);
+  const discipline = (metrics.largeRepoRatio * 40) + (longevityScore * 40) + (sizeScore * 20);
+  return Math.max(0, Math.min(100, Math.round(discipline)));
 }
 
 /**
@@ -41,8 +41,10 @@ function calculateDiscipline(metrics: AnalysisMetrics): number {
  * Signals: many small repos, rapid creation, technology variety
  */
 function calculateExperimentation(metrics: AnalysisMetrics): number {
-  const experimentation = (metrics.smallRepoRatio * 60) + (metrics.abandonedRepoRatio * 40);
-  return Math.round(experimentation);
+  const creationScore = Math.min(Math.log(metrics.repoCreationRate + 1) / Math.log(40), 1);
+
+  const experimentation = (metrics.smallRepoRatio * 50) + (creationScore * 30) + ((1 - metrics.activityConcentration) * 20);
+  return Math.max(0, Math.min(100, Math.round(experimentation)));
 }
 
 /**
@@ -50,10 +52,9 @@ function calculateExperimentation(metrics: AnalysisMetrics): number {
  * Signals: steady commit frequency, regular activity, long contribution span
  */
 function calculateConsistency(metrics: AnalysisMetrics): number {
-  const commitFrequencyNormalized = Math.min(metrics.commitFrequency / 60, 1);
-
-  const consistency = commitFrequencyNormalized * 100;
-  return Math.round(consistency);
+  const commitScore = Math.min(metrics.commitFrequency / 60, 1);
+  const consistency = (commitScore * 60) + (metrics.activityConcentration * 20) + (metrics.activeRepoRatio * 20);
+  return Math.max(0, Math.min(100, Math.round(consistency)));
 }
 
 /**
@@ -76,9 +77,10 @@ export function calculateConfidence(
   topScore: number,
   secondScore: number
 ): number {
+  if (topScore === 0) return 0;
   // Confidence based on score gap
-  const difference = topScore - secondScore;
-  return Math.max(0, difference); // Representing the percentage
+  const difference = (topScore - secondScore) / topScore;
+  return Math.max(0, Math.min(1, difference)); // Representing the percentage
 }
 
 /**

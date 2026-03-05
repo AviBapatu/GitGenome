@@ -17,7 +17,7 @@ export const githubService = {
 
     fetchAllRepos: async (
         username: string,
-        maxRepos: number = 100
+        maxRepos: number = 1000
     ): Promise<GithubRepoData[]> => {
         const perPage = 100;
         const pagesNeeded = Math.ceil(maxRepos / perPage);
@@ -42,7 +42,7 @@ export const githubService = {
             repo.fork === false &&
             repo.archived === false &&
             repo.size > 0 &&
-            repo.owner?.login.toLowerCase() === username.toLowerCase()
+            (repo.owner?.login || "").toLowerCase() === username.toLowerCase()
         );
 
         // Sort by updated_at to ensure order
@@ -50,11 +50,11 @@ export const githubService = {
 
         const finalRepos = validRepos.slice(0, maxRepos);
 
-        // Fetch commit count for top 10
-        const top10 = finalRepos.slice(0, 10);
-        await Promise.all(top10.map(async (repo) => {
+        // Fetch commit count for deep layer (top 30 repos)
+        const top30 = finalRepos.slice(0, 30);
+        await Promise.all(top30.map(async (repo) => {
             if (repo.owner?.login) {
-                repo.commitCount = await githubClient.getRepoCommitsCount(repo.owner.login, repo.name);
+                repo.commitCount = await githubClient.getRepoCommitsCount(repo.owner.login, repo.name, username);
             }
         }));
 

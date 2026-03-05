@@ -28,6 +28,7 @@ export interface GithubRepoData {
     topics?: string[];
     fork?: boolean;
     archived?: boolean;
+    is_template?: boolean;
     owner?: {
         login: string;
     };
@@ -116,9 +117,12 @@ export const githubClient = {
         );
     },
 
-    getRepoCommitsCount: async (owner: string, repo: string): Promise<number> => {
+    getRepoCommitsCount: async (owner: string, repo: string, author?: string): Promise<number> => {
         const url = new URL(`${BASE_URL}/repos/${owner}/${repo}/commits`);
         url.searchParams.append("per_page", "1");
+        if (author) {
+            url.searchParams.append("author", author);
+        }
 
         try {
             const response = await fetch(url.toString(), {

@@ -89,7 +89,7 @@ ${pad("Commit Frequency:", 20)} ${debug.metrics.commitFrequency.toFixed(1)}/mont
 ${pad("Night Commit Ratio:", 20)} ${(debug.metrics.nightCommitRatio * 100).toFixed(1)}%
 ${pad("Activity Concentrat.:", 20)} ${(debug.metrics.activityConcentration * 100).toFixed(1)}%
 ${pad("Avg Project Life:", 20)} ${(debug.metrics.avgProjectLongevity / 30).toFixed(1)} months
-${pad("Creation Rate:", 20)} ${debug.metrics.creationFrequency.toFixed(2)}/year
+${pad("Creation Rate:", 20)} ${debug.metrics.repoCreationRate.toFixed(2)}/year
 ${pad("Dominant Language:", 20)} ${debug.metrics.dominantLanguage || "None"}
 
 📋 EVIDENCE

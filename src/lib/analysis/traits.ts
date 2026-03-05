@@ -110,11 +110,11 @@ export function detectLanguageExplorer(metrics: AnalysisMetrics): Trait | null {
 export function detectRapidExperimenter(
   metrics: AnalysisMetrics
 ): Trait | null {
-  if (metrics.creationFrequency > 3) {
+  if (metrics.repoCreationRate > 3) {
     return {
       name: "Rapid Experimenter",
       confidence: 0.8,
-      explanation: `Creates new projects frequently - approximately ${Math.round(metrics.creationFrequency)} repositories per year.`,
+      explanation: `Creates new projects frequently - approximately ${Math.round(metrics.repoCreationRate)} repositories per year.`,
     };
   }
 
